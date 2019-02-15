@@ -10,6 +10,11 @@ s3 = boto3.resource('s3')
 # Print out bucket names
 for bucket in s3.buckets.all():
     print(bucket.name)
+#     bucket_name = bucket.name
+
+# file_name = 'location-of-your-file'
+# key_name = 'name-of-file-in-s3'
+# s3.upload_file(file_name, bucket_name, key_name)
 
 
 # conversion to a list
@@ -38,21 +43,21 @@ if __name__ == "__main__":
 
 
     # # index faces
-    # response_index_faces = client.index_faces(
-    #     CollectionId=collectionId,
-    #     Image={
-    #         'S3Object': {
-    #             'Bucket': bucket,
-    #             'Name': photo1,
-    #         }
-    #     },
-    #     ExternalImageId=photo1,
-    #     DetectionAttributes=[
-    #         'ALL'
-    #     ],
-    #     MaxFaces=123,
-    #     QualityFilter='AUTO'
-    # )
+    response_index_faces = client.index_faces(
+        CollectionId=collectionId,
+        Image={
+            'S3Object': {
+                'Bucket': bucket,
+                'Name': 'collection4/zuck1.jpg',
+            }
+        },
+        ExternalImageId='zuck1.jpg',
+        DetectionAttributes=[
+            'ALL'
+        ],
+        MaxFaces=123,
+        QualityFilter='AUTO'
+    )
 
     # pp.pprint(response_index_faces)
 

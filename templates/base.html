@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+  <head>
+      <title>Photoring</title>
+  </head>
+
+  <body>
+
+      <h3>Photoring</h3>
+      <hr>
+      <div>
+          {% for flash in get_flashed_messages() %}
+            <div>{{ flash }}</div>
+          {% endfor %}
+          {% block content %}
+          {% endblock %}
+      </div>
+
+  </body>
+</html>

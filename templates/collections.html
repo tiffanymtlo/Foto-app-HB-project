@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+<div>
+    <h2>Collection {{ collection_id }}</h2>
+
+    Hello. this is supposed to be a page for a collection details: people list, photo list
+    <br>
+    <a href="/persons/1">click me to see PERSON detail</a>
+    <br>
+
+
+    <h4>Photos: </h4>
+    <ul>
+        {% for photo in photos %}
+            <li>
+                <a href="/photos/{{ photo.id }}">
+                    Photo {{ photo.id }}
+                    <br>
+                    <img src="{{ url_dict[photo.id] }}" height="100">
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+
+</div>
+{% endblock %}
