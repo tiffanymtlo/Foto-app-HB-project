@@ -1,15 +1,25 @@
-<!doctype html>
-<html>
-<head>
-  <title>Photoring</title>
-</head>
+{% extends 'base.html' %}
+{% block content %}
+    <div>
+        Person {{ person.id }} in <a href="/collections/{{ collection_id }}">Collection {{ collection_id }}</a>
+        {% if person.name %}
+            Name: {{ person.name }}
+        {% endif %}
+        <br>
+        <br>
+        <div>Person {{ person.id }} is found in these photos: </div>
+        {% if url_dict %}
+            <ul>
+                {% for id, url in url_dict.items() %}
+                    <li>
+                        <a href="/photos/{{ id }}">
+                            Photo {{ id }}
+                            <img src="{{ url }}" width=150>
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
 
-<body>
-    Hello. this is supposed to be a page for a peron details
-    <br>
-    <a href="/collections/1">click me to see COLLECTION detail</a>
-    <br>
-    <a href="/photos/1">click me to see PHOTO detail</a>
-
-</body>
-</html>
+{% endblock %}

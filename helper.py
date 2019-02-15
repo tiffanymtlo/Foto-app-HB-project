@@ -14,7 +14,6 @@ rekognition = boto3.client('rekognition')
 
 
 """ SOMETHING TO CHANGE LATER!!!
-1. bucket value (need to be dynamic)
 2. error handling of upload_file_to_s3
 3. hide bucket name"""
 
@@ -101,16 +100,17 @@ def delete_rekognition_collection(collection_id):
     # pp.pprint(response)
 
 
-def get_externalImageId_faceId_dict(collection_id):
+def get_faceId_externalImageId_dict(collection_id):
 
     collection_name = 'collection{}'.format(collection_id)
     response = rekognition.list_faces(CollectionId=collection_name)
-    faces_list = []
+    pp.pprint(response)
+    # faces_list = []
 
     faceId_externalImageId_dict = {}
 
     for face in response['Faces']:
-        faceId_externalImageId_dict[face['FaceId']] = face['ExternalImageId']
+        faceId_externalImageId_dict[face['FaceId']] = {'photo_id': face['ExternalImageId'], 'BoundingBox': face['BoundingBox']}
 
     pp.pprint(faceId_externalImageId_dict)
 
@@ -127,7 +127,7 @@ def search_faces(collection_id, face_id):
         FaceMatchThreshold=75.0
     )
 
-    pp.pprint(response)
+    # pp.pprint(response)
 
     matched_faces_list = [face_id]
     if response['FaceMatches']:
@@ -137,18 +137,12 @@ def search_faces(collection_id, face_id):
     return matched_faces_list
 
 
-# def get_matched_people_in_collection(collection_id, faces_list):
+def make_photos_urls_dict(photo_list):
 
-#     # create collection
-#     # create_rekognition_collection(collection_id)
-#     # # index_faces in each photo
-#     # for photo in photo_list:
-#     #     index_faces(collection_id, photo.s3_key, photo.id)
-#     # # get a list faceid indexed
-#     # faces_list = get_indexed_faces_list(collection_id)
-#     # iterate the list of face indices
-#     for face in faces_list:
-#         person = Person()
-#         search_faces(collection_id, face)
+    url_dict={}
+    for photo in photo_list:
+        url_dict[photo.id] = convert_photo_byte_string_to_url(photo.byte_string)
+
+    return url_dict
 
 
