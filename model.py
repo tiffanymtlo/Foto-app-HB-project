@@ -36,11 +36,14 @@ class Photo(db.Model):
     collection_id = db.Column(db.Integer, db.ForeignKey('collections.id'), nullable=False)
     s3_key = db.Column(db.String(200), nullable=False)
     byte_string = db.Column(db.LargeBinary, nullable=False)
-    width = db.Column(db.Integer)
-    height = db.Column(db.Integer)
+    # width = db.Column(db.Float)
+    # height = db.Column(db.Float)
+    # top = db.Column(db.Float)
+    # left = db.Column(db.Float)
 
     collection = db.relationship('Collection', backref='photos')
     persons = db.relationship('Person', secondary='persons_photos', backref='photos')
+    person_photo = db.relationship('PersonPhoto', backref='photo')
 
     def __repr__(self):
 
@@ -57,6 +60,7 @@ class Person(db.Model):
     collection_id = db.Column(db.Integer, db.ForeignKey('collections.id'), nullable=False)
 
     collection = db.relationship('Collection', backref='persons')
+    person_photo = db.relationship('PersonPhoto', backref='person')
 
     def __repr__(self):
 
@@ -71,12 +75,18 @@ class PersonPhoto(db.Model):
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     person_id = db.Column(db.Integer, db.ForeignKey('persons.id'), nullable=False)
     photo_id = db.Column(db.Integer, db.ForeignKey('photos.id'), nullable=False)
-    coordinate_x = db.Column(db.Integer)
-    coordinate_y = db.Column(db.Integer)
+    width = db.Column(db.Float)
+    height = db.Column(db.Float)
+    top = db.Column(db.Float)
+    left = db.Column(db.Float)
+    # width = db.Column(db.Integer)
+    # height = db.Column(db.Integer)
+    # top = db.Column(db.Integer)
+    # left = db.Column(db.Integer)
 
     def __repr__(self):
 
-        return f"""<PersonPhoto id={self.id}, person_id={self.person_id}, photo_id={self.photo_id}>"""
+        return f"""<PersonPhoto id={self.id}, person_id={self.person_id}, photo_id={self.photo_id}, width={self.width}, height={self.height}, top={self.top}, left={self.left}>"""
 
 
 ##############################################################################

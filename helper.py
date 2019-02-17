@@ -145,4 +145,15 @@ def make_photos_urls_dict(photo_list):
 
     return url_dict
 
+# ********DELETE EVERYTHING BELOW WHEN YOU ARE DONE*********
+
+def list_rekognition_collections():
+    response = rekognition.list_collections()
+    print(response)
+
+
+def delete_rek_collection(collection_name):
+
+    response = rekognition.delete_collection(CollectionId=collection_name)
+
 

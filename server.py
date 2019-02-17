@@ -19,6 +19,10 @@ from datetime import datetime
 from secret import bucket, APP_SECRET_KEY
 
 
+
+# ******DELETE THE LINE BELOW WHEN YOU ARE DONE*****
+from helper import list_rekognition_collections, delete_rek_collection
+
 """ SOMETHING TO CHANGE LATER!!!
 1. breakdown upload_pics_to_s3
 2. error handling for upload_file_to_s3
@@ -72,7 +76,6 @@ def upload_pics_to_s3():
             output = upload_file_to_s3(file, bucket, new_collection.id)
             # save the path of the file uploaded as string
             path = str(output)
-
             # get the byte string representation of the image
             byte = get_photo_bytestring_from_s3(bucket, path)
 
@@ -82,38 +85,56 @@ def upload_pics_to_s3():
 
         db.session.commit()
 
-        flash('Your collection of pictures was uploaded successfully!')
-
         # faces matching
-        delete_rekognition_collection(new_collection.id)
+        # delete_rekognition_collection(new_collection.id)
         create_rekognition_collection(new_collection.id)
-        photo_list = Photo.query.filter(Photo.collection_id == new_collection.id).all()
+        # photo_list = Photo.query.filter(Photo.collection_id == new_collection.id).all()
+        photo_list = new_collection.photos
 
+        # index each face in each photo in the collection
         for photo in photo_list:
             index_faces(new_collection.id, photo.s3_key, photo.id)
 
+        # get a dict with FaceId, ImageId and the face BoundingBox information
         photos_faces_dict = get_faceId_externalImageId_dict(new_collection.id)
 
+        # get a list of all FaceId's
         faces_list = []
         for faceId in photos_faces_dict:
             faces_list.append(faceId)
 
         processed_ids = []
+        # iterate through each FaceId and update the database with its information
         for face in faces_list:
             if face not in processed_ids:
+                # match the FaceId with other faces and get all the FaceId's that belong to the same person
                 matched_faces = search_faces(new_collection.id, face)
                 # print(matched_faces)
                 person = Person(collection_id=new_collection.id)
                 # print(person)
+                # connect the person obejct with all the photo objects that the person appears in
                 for matched_face in matched_faces:
-                    photo = Photo.query.get(photos_faces_dict[matched_face]['photo_id'])
+                    matched_face_properties = photos_faces_dict[matched_face]
+                    photo = Photo.query.get(matched_face_properties['photo_id'])
+                    width = matched_face_properties['BoundingBox']['Width']
+                    height = matched_face_properties['BoundingBox']['Height']
+                    top = matched_face_properties['BoundingBox']['Top']
+                    left = matched_face_properties['BoundingBox']['Left']
+                    person_photo = PersonPhoto(person=person, photo=photo, width=width, height=height, top=top, left=left)
                     # print(photo)
-                    person.photos.append(photo)
+                    person.person_photo.append(person_photo)
                 db.session.add(person)
-                db.session.commit()
                 processed_ids = processed_ids + matched_faces
 
+        # update the database with the time finish processing the collection
+        new_collection.time_processed = datetime.utcnow()
+        db.session.commit()
+        flash('Your collection of pictures was processed successfully!')
+        # delete the collection when it's done
         delete_rekognition_collection(new_collection.id)
+
+        # list_rekognition_collections()
+
 
         return redirect(f'/collections/{new_collection.id}')
 
@@ -127,9 +148,6 @@ def show_collections(collection_id):
     person_list = Person.query.filter(Person.collection_id == collection_id).all()
 
     url_dict = make_photos_urls_dict(photo_list)
-    # url_dict = {}
-    # for photo in photo_list:
-    #     url_dict[photo.id] = convert_photo_byte_string_to_url(photo.byte_string)
 
     return render_template('collections.html', collection_id=collection_id, photos=photo_list, url_dict=url_dict, persons=person_list)
 
@@ -142,12 +160,9 @@ def person_detail(person_id):
     photo_list = person.photos
     collection_id = person.collection_id
 
-    url_dict = make_photos_urls_dict(photo_list)
-    # url_dict={}
-    # for photo in photos:
-    #     url_dict[photo.id] = convert_photo_byte_string_to_url(photo.byte_string)
+    photo_url_dict = make_photos_urls_dict(photo_list)
 
-    return render_template('persons.html', collection_id=collection_id, person=person, url_dict=url_dict)
+    return render_template('persons.html', collection_id=collection_id, person=person, url_dict=photo_url_dict)
 
 
 @app.route('/photos/<int:photo_id>')

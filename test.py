@@ -33,13 +33,13 @@ if __name__ == "__main__":
     
     client=boto3.client('rekognition')
 
-    # # #Create a collection
-    # print('Creating collection:' + collectionId)
-    # response_create_collection = client.create_collection(CollectionId=collectionId)
-    # print(response_create_collection)
-    # print('Collection ARN: ' + response_create_collection['CollectionArn'])
-    # print('Status code: ' + str(response_create_collection['StatusCode']))
-    # print('Done...')
+    # #Create a collection
+    print('Creating collection:' + collectionId)
+    response_create_collection = client.create_collection(CollectionId=collectionId)
+    print(response_create_collection)
+    print('Collection ARN: ' + response_create_collection['CollectionArn'])
+    print('Status code: ' + str(response_create_collection['StatusCode']))
+    print('Done...')
 
 
     # # index faces
