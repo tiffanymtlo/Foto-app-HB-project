@@ -12,7 +12,7 @@ database_name = 'photos_identify'
 
 class Collection(db.Model):
     """ Collections table """
-    
+
     __tablename__ = 'collections'
 
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
@@ -36,10 +36,8 @@ class Photo(db.Model):
     collection_id = db.Column(db.Integer, db.ForeignKey('collections.id'), nullable=False)
     s3_key = db.Column(db.String(200), nullable=False)
     byte_string = db.Column(db.LargeBinary, nullable=False)
-    # width = db.Column(db.Float)
-    # height = db.Column(db.Float)
-    # top = db.Column(db.Float)
-    # left = db.Column(db.Float)
+    width = db.Column(db.Integer, nullable=False)
+    height = db.Column(db.Integer, nullable=False)
 
     collection = db.relationship('Collection', backref='photos')
     persons = db.relationship('Person', secondary='persons_photos', backref='photos')
@@ -75,14 +73,10 @@ class PersonPhoto(db.Model):
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     person_id = db.Column(db.Integer, db.ForeignKey('persons.id'), nullable=False)
     photo_id = db.Column(db.Integer, db.ForeignKey('photos.id'), nullable=False)
-    width = db.Column(db.Float)
-    height = db.Column(db.Float)
-    top = db.Column(db.Float)
-    left = db.Column(db.Float)
-    # width = db.Column(db.Integer)
-    # height = db.Column(db.Integer)
-    # top = db.Column(db.Integer)
-    # left = db.Column(db.Integer)
+    face_width_percentage = db.Column(db.Float)
+    face_height_percentage = db.Column(db.Float)
+    face_top_percentage = db.Column(db.Float)
+    face_left_percentage = db.Column(db.Float)
 
     def __repr__(self):
 

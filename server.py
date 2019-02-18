@@ -28,6 +28,9 @@ from model import Collection, Photo, Person, PersonPhoto
 from datetime import datetime
 from secret import bucket, APP_SECRET_KEY
 
+from PIL import Image
+import io
+
 
 
 # ******DELETE THE LINE BELOW WHEN YOU ARE DONE*****
@@ -104,11 +107,16 @@ def upload_files(files, collection_id):
         file.filename = secure_filename(file.filename)
         s3_key = upload_file_to_s3(file, bucket, collection_id)
         byte = get_photo_bytestring_from_s3(bucket, s3_key)
+        im = Image.open(io.BytesIO(byte))
+        width, height = im.size
         db.session.add(Photo(
             collection_id=collection_id,
             s3_key=s3_key,
-            byte_string=byte
+            byte_string=byte,
+            width=width,
+            height=height
         ))
+        im.close()
 
     db.session.commit()
 
@@ -131,18 +139,18 @@ def process_faces(collection_id):
             for matched_face in face_ids_of_same_person:
                 matched_face_properties = photos_faces_dict[matched_face]
                 photo = Photo.query.get(matched_face_properties['photo_id'])
-                width = matched_face_properties['bounding_box']['Width']
-                height = matched_face_properties['bounding_box']['Height']
-                top = matched_face_properties['bounding_box']['Top']
-                left = matched_face_properties['bounding_box']['Left']
+                face_width_percentage = matched_face_properties['bounding_box']['Width']
+                face_height_percentage = matched_face_properties['bounding_box']['Height']
+                face_top_percentage = matched_face_properties['bounding_box']['Top']
+                face_left_percentage = matched_face_properties['bounding_box']['Left']
 
                 person_photo = PersonPhoto(
                     person=person,
                     photo=photo,
-                    width=width,
-                    height=height,
-                    top=top,
-                    left=left
+                    face_width_percentage=face_width_percentage,
+                    face_height_percentage=face_height_percentage,
+                    face_top_percentage=face_top_percentage,
+                    face_left_percentage=face_left_percentage
                 )
 
                 person.person_photo.append(person_photo)

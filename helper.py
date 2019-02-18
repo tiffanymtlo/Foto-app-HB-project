@@ -89,7 +89,6 @@ def delete_rekognition_collection(collection_id):
 
     collection_name = 'collection{}'.format(collection_id)
     response = rekognition.delete_collection(CollectionId=collection_name)
-    # pp.pprint(response)
 
 
 def get_face_id_external_image_id_dict(collection_id):
@@ -103,7 +102,7 @@ def get_face_id_external_image_id_dict(collection_id):
             'bounding_box': face['BoundingBox'],
         }
 
-    pp.pprint(result)
+    # pp.pprint(result)
 
     return result
 
