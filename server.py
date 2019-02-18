@@ -8,7 +8,17 @@ from flask_debugtoolbar import DebugToolbarExtension
 from model import connect_to_db, db
 
 # importing helper functions from helper.py
-from helper import upload_file_to_s3, get_photo_bytestring_from_s3, convert_photo_byte_string_to_url, create_rekognition_collection, index_faces, delete_rekognition_collection, get_faceId_externalImageId_dict, search_faces, make_photos_urls_dict
+from helper import (
+upload_file_to_s3,
+get_photo_bytestring_from_s3,
+convert_photo_byte_string_to_url,
+create_rekognition_collection,
+index_faces,
+delete_rekognition_collection,
+get_face_id_external_image_id_dict,
+search_faces,
+make_photos_urls_dict
+)
 # importing werkzeug for later use
 from werkzeug.utils import secure_filename
 
@@ -40,103 +50,105 @@ app.secret_key = APP_SECRET_KEY
 app.jinja_env.undefined = StrictUndefined
 
 @app.route('/')
-def upload():
+def index():
     """ Show the area for uploading pictures """
     """ FIX THE HTML LATER """
-    return render_template('upload.html')
+    return render_template('index.html')
 
 
-@app.route('/', methods=['POST'])
-def upload_pics_to_s3():
+@app.route('/upload', methods=['POST'])
+def upload():
 
     """ DOCS: http://zabana.me/notes/upload-files-amazon-s3-flask.html """
 
+    files = request.files.getlist("user_file")
+
     # Check if there's a 'user_file' key
-    if len(request.files) <= 0:
+    if len(files) == 0:
         flash('No files were selected. Please select file(s) to upload.')
         return redirect('/')
 
-    # Store the file object from request.files
-    files = request.files.getlist("user_file")
+    # create a new collection instance and commit to database
+    new_collection = Collection()
+    db.session.add(new_collection)
+    db.session.commit()
 
-    # # Check if there's a file
-    if len(files):
-    # if file and allowed_file(file.filename):
+    try:
+        upload_files(files, new_collection.id)
+    except:
+        flash('Failed to upload files. Please try again. ')
+        return redirect('/')
 
-        # create a new collection instance and commit to database
-        new_collection = Collection()
-        db.session.add(new_collection)
-        db.session.commit()
-
-        # iterate through each file object in the files list of file objects
-        for file in files:
-            # get a secure version of filename
-            file.filename = secure_filename(file.filename)
-            # upload pic to s3
-            output = upload_file_to_s3(file, bucket, new_collection.id)
-            # save the path of the file uploaded as string
-            path = str(output)
-            # get the byte string representation of the image
-            byte = get_photo_bytestring_from_s3(bucket, path)
-
-            # create new Photo object for the file object
-            new_photo = Photo(collection_id=new_collection.id, s3_key=path, byte_string=byte)
-            db.session.add(new_photo)
-
-        db.session.commit()
-
-        # faces matching
-        # delete_rekognition_collection(new_collection.id)
-        create_rekognition_collection(new_collection.id)
-        # photo_list = Photo.query.filter(Photo.collection_id == new_collection.id).all()
-        photo_list = new_collection.photos
-
-        # index each face in each photo in the collection
-        for photo in photo_list:
+    # faces matching
+    if create_rekognition_collection(new_collection.id) == True:
+        for photo in new_collection.photos:
             index_faces(new_collection.id, photo.s3_key, photo.id)
 
-        # get a dict with FaceId, ImageId and the face BoundingBox information
-        photos_faces_dict = get_faceId_externalImageId_dict(new_collection.id)
+        process_faces(new_collection.id)
 
-        # get a list of all FaceId's
-        faces_list = []
-        for faceId in photos_faces_dict:
-            faces_list.append(faceId)
+    # update the database with the time finish processing the collection
+    new_collection.time_processed = datetime.utcnow()
+    db.session.commit()
 
-        processed_ids = []
-        # iterate through each FaceId and update the database with its information
-        for face in faces_list:
-            if face not in processed_ids:
-                # match the FaceId with other faces and get all the FaceId's that belong to the same person
-                matched_faces = search_faces(new_collection.id, face)
-                # print(matched_faces)
-                person = Person(collection_id=new_collection.id)
-                # print(person)
-                # connect the person obejct with all the photo objects that the person appears in
-                for matched_face in matched_faces:
-                    matched_face_properties = photos_faces_dict[matched_face]
-                    photo = Photo.query.get(matched_face_properties['photo_id'])
-                    width = matched_face_properties['BoundingBox']['Width']
-                    height = matched_face_properties['BoundingBox']['Height']
-                    top = matched_face_properties['BoundingBox']['Top']
-                    left = matched_face_properties['BoundingBox']['Left']
-                    person_photo = PersonPhoto(person=person, photo=photo, width=width, height=height, top=top, left=left)
-                    # print(photo)
-                    person.person_photo.append(person_photo)
-                db.session.add(person)
-                processed_ids = processed_ids + matched_faces
+    flash('Your collection of pictures was processed successfully!')
 
-        # update the database with the time finish processing the collection
-        new_collection.time_processed = datetime.utcnow()
-        db.session.commit()
-        flash('Your collection of pictures was processed successfully!')
-        # delete the collection when it's done
-        delete_rekognition_collection(new_collection.id)
+    # delete the collection when it's done
+    delete_rekognition_collection(new_collection.id)
 
-        # list_rekognition_collections()
+    return redirect(f'/collections/{new_collection.id}')
 
 
-        return redirect(f'/collections/{new_collection.id}')
+def upload_files(files, collection_id):
+    # Go through each file, create a new Photo() and upload to S3
+    for file in files:
+        file.filename = secure_filename(file.filename)
+        s3_key = upload_file_to_s3(file, bucket, collection_id)
+        byte = get_photo_bytestring_from_s3(bucket, s3_key)
+        db.session.add(Photo(
+            collection_id=collection_id,
+            s3_key=s3_key,
+            byte_string=byte
+        ))
+
+    db.session.commit()
+
+
+def process_faces(collection_id):
+    # get a dict with FaceId, ImageId and the face BoundingBox information
+    photos_faces_dict = get_face_id_external_image_id_dict(collection_id)
+    faces_list = photos_faces_dict.keys()
+    processed_ids = []
+
+    # iterate through each FaceId and update the database with its information
+    for face in faces_list:
+        if face not in processed_ids:
+            # match the FaceId with other faces and get all the FaceId's that belong to the same person
+            face_ids_of_same_person = search_faces(collection_id, face)
+            # print(face_ids_of_same_person)
+            person = Person(collection_id=collection_id)
+            # print(person)
+            # connect the person obejct with all the photo objects that the person appears in
+            for matched_face in face_ids_of_same_person:
+                matched_face_properties = photos_faces_dict[matched_face]
+                photo = Photo.query.get(matched_face_properties['photo_id'])
+                width = matched_face_properties['bounding_box']['Width']
+                height = matched_face_properties['bounding_box']['Height']
+                top = matched_face_properties['bounding_box']['Top']
+                left = matched_face_properties['bounding_box']['Left']
+
+                person_photo = PersonPhoto(
+                    person=person,
+                    photo=photo,
+                    width=width,
+                    height=height,
+                    top=top,
+                    left=left
+                )
+
+                person.person_photo.append(person_photo)
+
+            db.session.add(person)
+            processed_ids = processed_ids + face_ids_of_same_person
 
 
 @app.route('/collections/<int:collection_id>')
@@ -177,7 +189,6 @@ def photo_detail(photo_id):
     url = convert_photo_byte_string_to_url(photo.byte_string)
 
     return render_template('photos.html', url=url, collection_id=collection_id, persons=persons, photo_id=photo_id)
-
 
 
 if __name__ == '__main__':

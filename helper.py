@@ -23,24 +23,18 @@ def upload_file_to_s3(file, bucket_name, collection_id, acl='private'):
     """ DOCS: http://zabana.me/notes/upload-files-amazon-s3-flask.html """
     key_name = 'collection{}/{}'.format(collection_id, file.filename)
 
-    try:
-        # uploading a file object to Amazon S3
-        """ setting Content_Type allows users to read the file rather than
-            to prompt users to download the files """
-        s3.upload_fileobj(
-            file,
-            bucket_name,
-            key_name,
-            ExtraArgs={
-                "ACL": acl,
-                "ContentType": file.content_type
-            }
-        )
-
-    except Exception as e:
-        # This is a catch all exception, edit this part to fit your needs.
-        print("Something Happened: ", e)
-        return e
+    # uploading a file object to Amazon S3
+    """ setting Content_Type allows users to read the file rather than
+        to prompt users to download the files """
+    s3.upload_fileobj(
+        file,
+        bucket_name,
+        key_name,
+        ExtraArgs={
+            "ACL": acl,
+            "ContentType": file.content_type
+        }
+    )
 
     return "{}".format(key_name)
 
@@ -56,7 +50,6 @@ def get_photo_bytestring_from_s3(bucket_name, key_name):
 
 
 def convert_photo_byte_string_to_url(byte_string):
-
     url = 'data:image/jpeg;base64,' + base64.b64encode(byte_string).decode('utf8')
 
     return url
@@ -64,9 +57,12 @@ def convert_photo_byte_string_to_url(byte_string):
 
 def create_rekognition_collection(collection_id):
     # create a rekognition collection for a collection of photos to store indexed faces
-    collection_name = 'collection{}'.format(collection_id)
-    response = rekognition.create_collection(CollectionId=collection_name)
-    # pp.pprint(response)
+    try:
+        collection_name = 'collection{}'.format(collection_id)
+        response = rekognition.create_collection(CollectionId=collection_name)
+        return True
+    except:
+        return False
 
 
 def index_faces(collection_id, path, photo_id):
@@ -87,10 +83,6 @@ def index_faces(collection_id, path, photo_id):
         MaxFaces=50,
         QualityFilter='AUTO'
     )
-    # pp.pprint(response)
-
-    # result = {}
-    # result['ExternalImageId'] = response['FaceRecords']
 
 
 def delete_rekognition_collection(collection_id):
@@ -100,25 +92,23 @@ def delete_rekognition_collection(collection_id):
     # pp.pprint(response)
 
 
-def get_faceId_externalImageId_dict(collection_id):
-
+def get_face_id_external_image_id_dict(collection_id):
     collection_name = 'collection{}'.format(collection_id)
     response = rekognition.list_faces(CollectionId=collection_name)
-    pp.pprint(response)
-    # faces_list = []
-
-    faceId_externalImageId_dict = {}
+    result = {}
 
     for face in response['Faces']:
-        faceId_externalImageId_dict[face['FaceId']] = {'photo_id': face['ExternalImageId'], 'BoundingBox': face['BoundingBox']}
+        result[face['FaceId']] = {
+            'photo_id': face['ExternalImageId'],
+            'bounding_box': face['BoundingBox'],
+        }
 
-    pp.pprint(faceId_externalImageId_dict)
+    pp.pprint(result)
 
-    return faceId_externalImageId_dict
+    return result
 
 
 def search_faces(collection_id, face_id):
-
     collection_name = 'collection{}'.format(collection_id)
     response = rekognition.search_faces(
         CollectionId=collection_name,
@@ -127,14 +117,12 @@ def search_faces(collection_id, face_id):
         FaceMatchThreshold=75.0
     )
 
-    # pp.pprint(response)
+    same_person_face_ids = [
+        face["Face"]["FaceId"] for face in response["FaceMatches"]
+    ]
+    same_person_face_ids.append(face_id)
 
-    matched_faces_list = [face_id]
-    if response['FaceMatches']:
-        for matched_face in response['FaceMatches']:
-            matched_faces_list.append(matched_face['Face']['FaceId'])
-
-    return matched_faces_list
+    return same_person_face_ids
 
 
 def make_photos_urls_dict(photo_list):
@@ -155,5 +143,3 @@ def list_rekognition_collections():
 def delete_rek_collection(collection_name):
 
     response = rekognition.delete_collection(CollectionId=collection_name)
-
-
