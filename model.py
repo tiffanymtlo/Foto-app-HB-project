@@ -54,11 +54,12 @@ class Person(db.Model):
     __tablename__ = 'persons'
 
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    name = db.Column(db.String(64), nullable=True)
+    name = db.Column(db.String(64))
     collection_id = db.Column(db.Integer, db.ForeignKey('collections.id'), nullable=False)
 
     collection = db.relationship('Collection', backref='persons')
     person_photo = db.relationship('PersonPhoto', backref='person')
+    # cropped_face_image = db.relationship('CroppedImage', uselist=False)
 
     def __repr__(self):
 
@@ -73,14 +74,31 @@ class PersonPhoto(db.Model):
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     person_id = db.Column(db.Integer, db.ForeignKey('persons.id'), nullable=False)
     photo_id = db.Column(db.Integer, db.ForeignKey('photos.id'), nullable=False)
-    face_width_percentage = db.Column(db.Float)
-    face_height_percentage = db.Column(db.Float)
-    face_top_percentage = db.Column(db.Float)
-    face_left_percentage = db.Column(db.Float)
+    face_width_percentage = db.Column(db.Float, nullable=False)
+    face_height_percentage = db.Column(db.Float, nullable=False)
+    face_top_percentage = db.Column(db.Float, nullable=False)
+    face_left_percentage = db.Column(db.Float, nullable=False)
+    cropped_face_image = db.Column(db.LargeBinary, nullable=False)
 
     def __repr__(self):
 
-        return f"""<PersonPhoto id={self.id}, person_id={self.person_id}, photo_id={self.photo_id}, width={self.width}, height={self.height}, top={self.top}, left={self.left}>"""
+        return f"""<PersonPhoto id={self.id}, person_id={self.person_id}, photo_id={self.photo_id}, face_width_percentage={self.face_width_percentage}, face_height_percentage={self.face_height_percentage}, face_top_percentage={self.face_top_percentage}, face_left_percentage={self.face_left_percentage}>"""
+
+#
+# class CroppedImage(db.Model):
+#     """ CroppedImage table to store cropped images which are Person's faces """
+#
+#     __tablename__ = 'cropped_images'
+#
+#     person_id = db.Column(db.Integer, db.ForeignKey('persons.id'), primary_key=True)
+#     cropped_face_image = db.Column(db.LargeBinary, nullable=False)
+#
+#     person = db.relationship('Person', uselist=False)
+#
+#     def __repr__(self):
+#
+#         return f"""<CroppedImage person_id={self.person_id}>"""
+
 
 
 ##############################################################################

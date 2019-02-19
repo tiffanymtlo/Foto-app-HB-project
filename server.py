@@ -17,7 +17,10 @@ index_faces,
 delete_rekognition_collection,
 get_face_id_external_image_id_dict,
 search_faces,
-make_photos_urls_dict
+make_photos_urls_dict,
+make_cropped_face_images_dict,
+get_photo_width_height,
+make_cropped_face_image
 )
 # importing werkzeug for later use
 from werkzeug.utils import secure_filename
@@ -28,8 +31,8 @@ from model import Collection, Photo, Person, PersonPhoto
 from datetime import datetime
 from secret import bucket, APP_SECRET_KEY
 
-from PIL import Image
-import io
+# from PIL import Image
+# import io
 
 
 
@@ -107,16 +110,17 @@ def upload_files(files, collection_id):
         file.filename = secure_filename(file.filename)
         s3_key = upload_file_to_s3(file, bucket, collection_id)
         byte = get_photo_bytestring_from_s3(bucket, s3_key)
-        im = Image.open(io.BytesIO(byte))
-        width, height = im.size
+        # image = Image.open(io.BytesIO(byte))
+        # width, height = image.size
+        width_height_tuple = get_photo_width_height(byte)
         db.session.add(Photo(
             collection_id=collection_id,
             s3_key=s3_key,
             byte_string=byte,
-            width=width,
-            height=height
+            width=width_height_tuple[0],
+            height=width_height_tuple[1]
         ))
-        im.close()
+        # image.close()
 
     db.session.commit()
 
@@ -144,15 +148,21 @@ def process_faces(collection_id):
                 face_top_percentage = matched_face_properties['bounding_box']['Top']
                 face_left_percentage = matched_face_properties['bounding_box']['Left']
 
+                photo_byte_string = photo.byte_string
+                photo_width = photo.width
+                photo_height = photo.height
+                image_bytes = make_cropped_face_image(photo_byte_string, photo_width, photo_height, face_width_percentage, face_height_percentage, face_top_percentage, face_left_percentage)
+
                 person_photo = PersonPhoto(
                     person=person,
                     photo=photo,
                     face_width_percentage=face_width_percentage,
                     face_height_percentage=face_height_percentage,
                     face_top_percentage=face_top_percentage,
-                    face_left_percentage=face_left_percentage
+                    face_left_percentage=face_left_percentage,
+                    cropped_face_image=image_bytes
                 )
-
+                
                 person.person_photo.append(person_photo)
 
             db.session.add(person)
@@ -167,9 +177,10 @@ def show_collections(collection_id):
     photo_list = Photo.query.filter(Photo.collection_id == collection_id).all()
     person_list = Person.query.filter(Person.collection_id == collection_id).all()
 
+    cropped_face_images_dict = make_cropped_face_images_dict(person_list)
     url_dict = make_photos_urls_dict(photo_list)
 
-    return render_template('collections.html', collection_id=collection_id, photos=photo_list, url_dict=url_dict, persons=person_list)
+    return render_template('collections.html', collection_id=collection_id, photos=photo_list, url_dict=url_dict, persons=person_list, cropped_faces_dict=cropped_face_images_dict)
 
 
 @app.route('/persons/<int:person_id>')

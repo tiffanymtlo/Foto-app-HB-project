@@ -1,6 +1,9 @@
 import boto3, botocore
 import base64
 
+from PIL import Image
+import io
+
 from secret import bucket
 import pprint
 
@@ -131,6 +134,38 @@ def make_photos_urls_dict(photo_list):
         url_dict[photo.id] = convert_photo_byte_string_to_url(photo.byte_string)
 
     return url_dict
+
+
+def get_photo_width_height(byte):
+    image = Image.open(io.BytesIO(byte))
+    width, height = image.size
+    image.close()
+
+    return (width, height)
+
+
+def make_cropped_face_image(photo_byte_string, photo_width, photo_height, face_width_percentage, face_height_percentage, face_top_percentage, face_left_percentage):
+    image = Image.open(io.BytesIO(photo_byte_string))
+    left = face_left_percentage * photo_width
+    top = face_top_percentage * photo_height
+    right = (face_width_percentage * photo_width) + left
+    bottom = (face_height_percentage * photo_height) + top
+    cropped_image = image.crop((left, top, right, bottom))
+    byte_string = io.BytesIO()
+    cropped_image.save(byte_string, format='PNG')
+    image_bytes = byte_string.getvalue()
+    image.close()
+
+    return image_bytes
+
+def make_cropped_face_images_dict(persons_list):
+    result={}
+    for person in persons_list:
+        persons_photos_list = person.person_photo
+        if len(persons_photos_list):
+            result[person.id] = convert_photo_byte_string_to_url(persons_photos_list[0].cropped_face_image)
+
+    return result
 
 # ********DELETE EVERYTHING BELOW WHEN YOU ARE DONE*********
 
