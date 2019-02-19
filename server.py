@@ -20,7 +20,8 @@ search_faces,
 make_photos_urls_dict,
 make_cropped_face_images_dict,
 get_photo_width_height,
-make_cropped_face_image
+make_cropped_face_image,
+get_bounding_box_info_from_dict
 )
 # importing werkzeug for later use
 from werkzeug.utils import secure_filename
@@ -30,9 +31,6 @@ from model import Collection, Photo, Person, PersonPhoto
 
 from datetime import datetime
 from secret import bucket, APP_SECRET_KEY
-
-# from PIL import Image
-# import io
 
 
 
@@ -110,17 +108,14 @@ def upload_files(files, collection_id):
         file.filename = secure_filename(file.filename)
         s3_key = upload_file_to_s3(file, bucket, collection_id)
         byte = get_photo_bytestring_from_s3(bucket, s3_key)
-        # image = Image.open(io.BytesIO(byte))
-        # width, height = image.size
-        width_height_tuple = get_photo_width_height(byte)
+        (photo_width, photo_height) = get_photo_width_height(byte)
         db.session.add(Photo(
             collection_id=collection_id,
             s3_key=s3_key,
             byte_string=byte,
-            width=width_height_tuple[0],
-            height=width_height_tuple[1]
+            width=photo_width,
+            height=photo_height
         ))
-        # image.close()
 
     db.session.commit()
 
@@ -136,30 +131,26 @@ def process_faces(collection_id):
         if face not in processed_ids:
             # match the FaceId with other faces and get all the FaceId's that belong to the same person
             face_ids_of_same_person = search_faces(collection_id, face)
-            # print(face_ids_of_same_person)
             person = Person(collection_id=collection_id)
-            # print(person)
+
             # connect the person obejct with all the photo objects that the person appears in
             for matched_face in face_ids_of_same_person:
                 matched_face_properties = photos_faces_dict[matched_face]
                 photo = Photo.query.get(matched_face_properties['photo_id'])
-                face_width_percentage = matched_face_properties['bounding_box']['Width']
-                face_height_percentage = matched_face_properties['bounding_box']['Height']
-                face_top_percentage = matched_face_properties['bounding_box']['Top']
-                face_left_percentage = matched_face_properties['bounding_box']['Left']
+                (face_width, face_height, face_top, face_left) = get_bounding_box_info_from_dict(matched_face_properties)
 
                 photo_byte_string = photo.byte_string
                 photo_width = photo.width
                 photo_height = photo.height
-                image_bytes = make_cropped_face_image(photo_byte_string, photo_width, photo_height, face_width_percentage, face_height_percentage, face_top_percentage, face_left_percentage)
+                image_bytes = make_cropped_face_image(photo_byte_string, photo_width, photo_height, face_width, face_height, face_top, face_left)
 
                 person_photo = PersonPhoto(
                     person=person,
                     photo=photo,
-                    face_width_percentage=face_width_percentage,
-                    face_height_percentage=face_height_percentage,
-                    face_top_percentage=face_top_percentage,
-                    face_left_percentage=face_left_percentage,
+                    face_width_percentage=face_width,
+                    face_height_percentage=face_height,
+                    face_top_percentage=face_top,
+                    face_left_percentage=face_left,
                     cropped_face_image=image_bytes
                 )
 

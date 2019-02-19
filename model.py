@@ -59,7 +59,6 @@ class Person(db.Model):
 
     collection = db.relationship('Collection', backref='persons')
     person_photo = db.relationship('PersonPhoto', backref='person')
-    # cropped_face_image = db.relationship('CroppedImage', uselist=False)
 
     def __repr__(self):
 
@@ -83,22 +82,6 @@ class PersonPhoto(db.Model):
     def __repr__(self):
 
         return f"""<PersonPhoto id={self.id}, person_id={self.person_id}, photo_id={self.photo_id}, face_width_percentage={self.face_width_percentage}, face_height_percentage={self.face_height_percentage}, face_top_percentage={self.face_top_percentage}, face_left_percentage={self.face_left_percentage}>"""
-
-#
-# class CroppedImage(db.Model):
-#     """ CroppedImage table to store cropped images which are Person's faces """
-#
-#     __tablename__ = 'cropped_images'
-#
-#     person_id = db.Column(db.Integer, db.ForeignKey('persons.id'), primary_key=True)
-#     cropped_face_image = db.Column(db.LargeBinary, nullable=False)
-#
-#     person = db.relationship('Person', uselist=False)
-#
-#     def __repr__(self):
-#
-#         return f"""<CroppedImage person_id={self.person_id}>"""
-
 
 
 ##############################################################################

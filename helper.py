@@ -144,6 +144,15 @@ def get_photo_width_height(byte):
     return (width, height)
 
 
+def get_bounding_box_info_from_dict(info_dict):
+    face_width_percentage = info_dict['bounding_box']['Width']
+    face_height_percentage = info_dict['bounding_box']['Height']
+    face_top_percentage = info_dict['bounding_box']['Top']
+    face_left_percentage = info_dict['bounding_box']['Left']
+
+    return (face_width_percentage, face_height_percentage, face_top_percentage, face_left_percentage)
+
+
 def make_cropped_face_image(photo_byte_string, photo_width, photo_height, face_width_percentage, face_height_percentage, face_top_percentage, face_left_percentage):
     image = Image.open(io.BytesIO(photo_byte_string))
     left = face_left_percentage * photo_width
