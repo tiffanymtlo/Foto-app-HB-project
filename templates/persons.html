@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
     <div>
-        Person {{ person.id }} in <a href="/collections/{{ collection_id }}">Collection {{ collection_id }}</a>
+        Person {{ person.id }} <img src="{{ cropped_face_image }}" height="50"> in <a href="/collections/{{ collection_id }}">Collection {{ collection_id }}</a>
         {% if person.name %}
             Name: {{ person.name }}
         {% endif %}

@@ -9,7 +9,12 @@
     {% if persons %}
         <ul>
             {% for person in persons %}
-                <li><a href="/persons/{{ person.id }}">Person {{ person.id }}</a></li>
+                <li>
+                  <a href="/persons/{{ person.id }}">
+                    <img src="{{ cropped_faces_dict[person.id] }}" height="50">
+                    Person {{ person.id }}
+                  </a>
+                </li>
             {% endfor %}
         </ul>
     {% endif %}

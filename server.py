@@ -162,7 +162,7 @@ def process_faces(collection_id):
                     face_left_percentage=face_left_percentage,
                     cropped_face_image=image_bytes
                 )
-                
+
                 person.person_photo.append(person_photo)
 
             db.session.add(person)
@@ -191,9 +191,10 @@ def person_detail(person_id):
     photo_list = person.photos
     collection_id = person.collection_id
 
+    cropped_face_image = convert_photo_byte_string_to_url(person.person_photo[0].cropped_face_image)
     photo_url_dict = make_photos_urls_dict(photo_list)
 
-    return render_template('persons.html', collection_id=collection_id, person=person, url_dict=photo_url_dict)
+    return render_template('persons.html', collection_id=collection_id, person=person, url_dict=photo_url_dict, cropped_face_image=cropped_face_image)
 
 
 @app.route('/photos/<int:photo_id>')
@@ -206,8 +207,9 @@ def photo_detail(photo_id):
 
     # generate a byte array for the image to display
     url = convert_photo_byte_string_to_url(photo.byte_string)
+    cropped_face_images_dict = make_cropped_face_images_dict(persons)
 
-    return render_template('photos.html', url=url, collection_id=collection_id, persons=persons, photo_id=photo_id)
+    return render_template('photos.html', url=url, collection_id=collection_id, persons=persons, photo_id=photo_id, cropped_faces_dict=cropped_face_images_dict)
 
 
 if __name__ == '__main__':

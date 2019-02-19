@@ -158,6 +158,7 @@ def make_cropped_face_image(photo_byte_string, photo_width, photo_height, face_w
 
     return image_bytes
 
+
 def make_cropped_face_images_dict(persons_list):
     result={}
     for person in persons_list:
