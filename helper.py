@@ -1,7 +1,7 @@
 import boto3, botocore
 import base64
 
-from PIL import Image
+from PIL import Image, ImageDraw
 import io
 
 from secret import bucket

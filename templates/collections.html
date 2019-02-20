@@ -1,31 +1,28 @@
-{% extends 'base.html' %}
-{% block content %}
+{% extends 'base.html' %} {% block content %}
 <div>
-    <h2>Collection {{ collection_id }}</h2>
-    <h4>Photos: </h4>
-    <ul>
-        {% for photo in photos %}
-            <li>
-                <a href="/photos/{{ photo.id }}">
-                    Photo {{ photo.id }}
-                    <br>
-                    <img src="{{ url_dict[photo.id] }}" height="100">
-                </a>
-            </li>
-        {% endfor %}
-    </ul>
+  <h2>Collection {{ collection_id }}</h2>
+  <h4>Photos:</h4>
+  <ul>
+    {% for photo in photos %}
+    <li>
+      <a href="/photos/{{ photo.id }}">
+        Photo {{ photo.id }} <br />
+        <img src="{{ url_dict[photo.id] }}" width="300" />
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
 
-    <h4>Persons: </h4>
-    <ul>
-        {% for person in persons %}
-            <li>
-                <a href="/persons/{{ person.id }}">
-                    <img src="{{ cropped_faces_dict[person.id] }}" height="50">
-                    Person {{ person.id }}
-                </a>
-            </li>
-        {% endfor %}
-    </ul>
-
+  <h4>Persons:</h4>
+  <ul>
+    {% for person in persons %}
+    <li>
+      <a href="/persons/{{ person.id }}">
+        <img src="{{ cropped_faces_dict[person.id] }}" height="50" /> Person {{
+        person.id }}
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
 </div>
 {% endblock %}

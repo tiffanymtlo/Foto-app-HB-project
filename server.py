@@ -2,7 +2,7 @@
 
 from jinja2 import StrictUndefined
 
-from flask import (Flask, render_template, redirect, request, flash, session)
+from flask import (Flask, render_template, redirect, request, flash, session, jsonify)
 from flask_debugtoolbar import DebugToolbarExtension
 
 from model import connect_to_db, db
@@ -195,12 +195,24 @@ def photo_detail(photo_id):
     photo = Photo.query.get(photo_id)
     collection_id = photo.collection_id
     persons = photo.persons
+    person_photo_list = photo.person_photo
 
     # generate a byte array for the image to display
     url = convert_photo_byte_string_to_url(photo.byte_string)
     cropped_face_images_dict = make_cropped_face_images_dict(persons)
 
-    return render_template('photos.html', url=url, collection_id=collection_id, persons=persons, photo_id=photo_id, cropped_faces_dict=cropped_face_images_dict)
+    return render_template('photos.html', url=url, collection_id=collection_id, persons=persons, photo=photo, cropped_faces_dict=cropped_face_images_dict, person_photo_list=person_photo_list)
+
+
+@app.route('/collections')
+def get_all_collections():
+    """Get json of available collections. """
+
+    collections = Collection.query.all()
+    data = {'collections': []}
+    for collection in collections:
+        data['collections'].append(collection.id)
+    return jsonify(data)
 
 
 if __name__ == '__main__':

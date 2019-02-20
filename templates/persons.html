@@ -1,25 +1,21 @@
-{% extends 'base.html' %}
-{% block content %}
-    <div>
-        Person {{ person.id }} <img src="{{ cropped_face_image }}" height="50"> in <a href="/collections/{{ collection_id }}">Collection {{ collection_id }}</a>
-        {% if person.name %}
-            Name: {{ person.name }}
-        {% endif %}
-        <br>
-        <br>
-        <div>Person {{ person.id }} is found in these photos: </div>
-        {% if url_dict %}
-            <ul>
-                {% for id, url in url_dict.items() %}
-                    <li>
-                        <a href="/photos/{{ id }}">
-                            Photo {{ id }}
-                            <img src="{{ url }}" width=150>
-                        </a>
-                    </li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-    </div>
+{% extends 'base.html' %} {% block content %}
+<div>
+  Person {{ person.id }} <img src="{{ cropped_face_image }}" height="50" /> in
+  <a href="/collections/{{ collection_id }}">Collection {{ collection_id }}</a>
+  {% if person.name %} Name: {{ person.name }} {% endif %} <br />
+  <br />
+  <div>Person {{ person.id }} is found in these photos:</div>
+  {% if url_dict %}
+  <ul>
+    {% for id, url in url_dict.items() %}
+    <li>
+      <a href="/photos/{{ id }}">
+        <img src="{{ url }}" width="500" title="Photo {{ id }}" />
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</div>
 
 {% endblock %}

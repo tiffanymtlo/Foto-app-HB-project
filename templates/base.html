@@ -1,19 +1,37 @@
-<!DOCTYPE html>
+<html>
   <head>
-      <title>Photoring</title>
+    <title>Photoring</title>
+    <link rel="stylesheet" href="/static/css/base.css"/>
+    <link rel="stylesheet" href="/static/css/dropdown-menu.css"/>
+    {% block page_specific_style %}
+    {% endblock %}
   </head>
 
   <body>
+    <h3><a href="/">Photoring</a></h3>
+    <hr>
+    <div class="collection-list-container">
+      <a href="" class="collection-menu">Collections</a>
+      <ul class="collection-list">
+      </ul>
+    </div>
+    <hr>
+    <div>
+        {% for flash in get_flashed_messages() %}
+          <div>{{ flash }}</div>
+        {% endfor %}
 
-      <h3>Photoring</h3>
-      <hr>
-      <div>
-          {% for flash in get_flashed_messages() %}
-            <div>{{ flash }}</div>
-          {% endfor %}
-          {% block content %}
-          {% endblock %}
-      </div>
+        {% block content %}
+        {% endblock %}
+    </div>
 
+    <hr>
+    <footer>Made by Tiffany Lo</footer>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="/static/js/dropdown-menu.js"></script>
+
+    {% block page_specific_scripts %}
+    {% endblock %}
   </body>
 </html>

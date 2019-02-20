@@ -1,0 +1,28 @@
+.photo-container {
+  position: relative;
+}
+
+.photo {
+  position: relative;
+  max-width: 100%;
+}
+
+.tag {
+  opacity: 0;
+  z-index: 2;
+  background: rgba(255,255,255,0.2);
+  position: absolute;
+  border: 2px solid #fff;
+  transition: all 0.2s ease-in-out;
+}
+
+.tag__anchor {
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.photo-container:hover .tag {
+  opacity: 1;
+}

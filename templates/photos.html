@@ -1,24 +1,48 @@
-{% extends 'base.html' %}
-{% block content %}
+{% extends 'base.html' %} {% block page_specific_style %}
+<link rel="stylesheet" href="/static/css/photo-tag.css" /> {% endblock %} {%
+block content %}
 <div>
-    <h3>Photo {{ photo_id }} in <a href="/collections/{{ collection_id }}">Collection {{ collection_id }}</a></h3>
-    <img src="{{ url }}" height="500">
-    <br>
-    <br>
-    <div>These people are in this photo: </div>
-    {% if persons %}
-        <ul>
-            {% for person in persons %}
-                <li>
-                  <a href="/persons/{{ person.id }}">
-                    <img src="{{ cropped_faces_dict[person.id] }}" height="50">
-                    Person {{ person.id }}
-                  </a>
-                </li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-    <br>
-
+  <h3>
+    Photo {{ photo.id }} in
+    <a href="/collections/{{ collection_id }}"
+      >Collection {{ collection_id }}</a
+    >
+  </h3>
+  <div class="photo-container" style="width:{{ photo.width }}px;">
+    <img class="photo" src="{{ url }}" width="{{ photo.width }}" /> {% if
+    person_photo_list %} {% for person_photo in person_photo_list %}
+    <div
+      class="tag"
+      data-id="{{ person_photo.person.id }}"
+      data-top="{{ person_photo.face_top_percentage * photo.height }}"
+      data-left="{{ person_photo.face_left_percentage * photo.width }}"
+      data-width="{{ person_photo.face_width_percentage * photo.width }}"
+      data-height="{{ person_photo.face_height_percentage * photo.height }}"
+    >
+      <a
+        title="Person {{ person_photo.person.id }}"
+        class="tag__anchor"
+        href="/persons/{{ person_photo.person.id }}"
+      ></a>
+    </div>
+    {% endfor %} {% endif %}
+  </div>
+  <br />
+  <br />
+  {% if persons %}
+  <div>These people are in this photo:</div>
+  <ul>
+    {% for person in persons %}
+    <li>
+      <a href="/persons/{{ person.id }}">
+        <img src="{{ cropped_faces_dict[person.id] }}" height="50" /> Person {{
+        person.id }}
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
+  {% endif %} <br />
 </div>
+{% endblock %} {% block page_specific_scripts %}
+<script src="/static/js/photo-tag.js"></script>
 {% endblock %}
