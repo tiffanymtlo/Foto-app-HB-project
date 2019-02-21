@@ -1,16 +1,16 @@
 $(function() {
-  $('.tag').each((idx, el) => {
+  $('.tag').each((index, el) => {
     const $el = $(el);
-    const top = $el.data('top');
-    const left = $el.data('left');
-    const width = $el.data('width');
-    const height = $el.data('height');
+    const top = parseFloat($el.data('top'));
+    const left = parseFloat($el.data('left'));
+    const width = parseFloat($el.data('width'));
+    const height = parseFloat($el.data('height'));
 
     $el.css({
-      width,
-      height,
-      top,
-      left,
+      width: width * 100 + '%',
+      height: height * 100 + '%',
+      top: top * 100 + '%',
+      left: left * 100 + '%',
     });
   });
 });

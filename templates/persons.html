@@ -1,21 +1,47 @@
-{% extends 'base.html' %} {% block content %}
-<div>
-  Person {{ person.id }} <img src="{{ cropped_face_image }}" height="50" /> in
-  <a href="/collections/{{ collection_id }}">Collection {{ collection_id }}</a>
-  {% if person.name %} Name: {{ person.name }} {% endif %} <br />
-  <br />
-  <div>Person {{ person.id }} is found in these photos:</div>
-  {% if url_dict %}
-  <ul>
-    {% for id, url in url_dict.items() %}
-    <li>
-      <a href="/photos/{{ id }}">
-        <img src="{{ url }}" width="500" title="Photo {{ id }}" />
-      </a>
-    </li>
-    {% endfor %}
-  </ul>
-  {% endif %}
-</div>
+{% extends 'base.html' %}
 
+{% block page_specific_style %}
+  <link rel="stylesheet" href="/static/css/photo-tag.css" />
+{% endblock %}
+
+{% block content %}
+  <div>
+    Person {{ person.id }}
+    <img class="face-thumbnail" src="{{ cropped_face_image }}" height="50" /> in
+    <a href="/collections/{{ collection_id }}">
+      Collection {{ collection_id }}
+    </a>
+    {% if person.name %}
+      Name: {{ person.name }}
+    {% endif %}
+    <br />
+    <br />
+    <div>Person {{ person.id }} is found in these photos:</div>
+    {% if url_dict %}
+      <ul>
+      {% for id, url in url_dict.items() %}
+        <li>
+          <!-- <a class="photo-container persons-page-photo-container" href="/photos/{{ id }}"> -->
+          <a class="photo-container" href="/photos/{{ id }}">
+            <img class="photo" src="{{ url }}" title="Photo {{ id }}" />
+            {% if id in boundingbox_dict %}
+              <div
+                class="tag"
+                data-id="{{ id }}"
+                data-top="{{ boundingbox_dict[id].face_top_percentage }}"
+                data-left="{{ boundingbox_dict[id].face_left_percentage }}"
+                data-width="{{ boundingbox_dict[id].face_width_percentage }}"
+                data-height="{{ boundingbox_dict[id].face_height_percentage}}"
+              ></div>
+            {% endif %}
+          </a>
+        </li>
+      {% endfor %}
+      </ul>
+    {% endif %}
+  </div>
+{% endblock %}
+
+{% block page_specific_scripts %}
+  <script src="/static/js/photo-tag.js"></script>
 {% endblock %}

@@ -1,33 +1,48 @@
 $(function() {
-  let collections = [];
-  $('.collection-menu').on('mouseover', function() {
-    $('.collection-list').html('');
-    if (!collections.length) {
+  let collectionInfoList;
+
+  $('.collections-menu').hover(function() {
+    const $this = $(this);
+    const $collectionMenuContainer = $this.find('.collections-menu__collections');
+
+    if (!collectionInfoList) {
       $.get('/collections', function(response) {
-        collections = response.collections;
-        collections.forEach(function(collection_id){
-          $('.collection-list').append('<li class="collection-item"><a href="">Collection' + collection_id + '</a><ul class="collection-detail"></ul></li>');
+        collectionInfoList = response;
+        console.log(response);
+        const collectionItemsList = collectionInfoList.map(function(collection) {
+          const $collectionLink = $('<a>', {
+            'class': 'collection__link',
+            href: '/collections/' + collection.id,
+            html: 'Collection ' + collection.id
+          });
+
+          const $collectionDetails = $('<div>', {
+            'class': 'collection__details',
+            html: 'There are ' + collection.numPhotos + ' photos and ' + collection.numPersons + ' persons.'
+          });
+
+          const $collection = $('<li>', {
+            'class': 'collection'
+          });
+
+          $collection
+            .append($collectionLink)
+            .append($collectionDetails);
+
+          return $collection;
         });
-      });
-    } else {
-      collections.forEach(function(collection_id){
-        $('.collection-list').append('<li class="collection-item"><a href="">Collection' + collection_id + '</a><ul class="collection-detail"></ul></li>');
+        $collectionMenuContainer
+          .html(collectionItemsList)
+          .addClass('show');
       });
     }
-  });
-
-  $('.collection-list-container').on('mouseleave', function() {
-    $('.collection-list').html('');
-  });
-
-  $('.collection-list').on('mouseenter', '.collection-item', function(evt) {
-    const $collectionDetail = $(this).find('ul.collection-detail');
-    $collectionDetail.append('<li>item1</li><li>item2</li>');
-  });
-
-  $('.collection-list').on('mouseleave', '.collection-item', function(evt) {
+    else {
+      $collectionMenuContainer
+        .addClass('show');
+    }
+  },
+  function() {
     const $this = $(this);
-    $this.find('ul.collection-detail').html('');
+    $this.find('.collections-menu__collections').removeClass('show');
   });
-
 });

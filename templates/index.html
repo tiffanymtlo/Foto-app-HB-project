@@ -1,17 +1,14 @@
 {% extends 'base.html' %}
+
 {% block content %}
 <div>
     <h1>Upload your photos</h1>
-
     <form action="/upload" method="POST" enctype="multipart/form-data">
-
         <label for="user_file">Upload Your Photos</label>
-        <br>
+        <br />
         <input type="file" name="user_file" accept=".png, .jpg, .jpeg" multiple>
-        <br></br>
+        <br />
         <button type="submit">Upload</button>
-
     </form>
-
 </div>
 {% endblock %}

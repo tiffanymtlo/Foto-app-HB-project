@@ -1,8 +1,8 @@
-<html>
+<!DOCTYPE html>
   <head>
     <title>Photoring</title>
-    <link rel="stylesheet" href="/static/css/base.css"/>
-    <link rel="stylesheet" href="/static/css/dropdown-menu.css"/>
+    <link rel="stylesheet" href="/static/css/base.css">
+    <link rel="stylesheet" href="/static/css/dropdown.css">
     {% block page_specific_style %}
     {% endblock %}
   </head>
@@ -10,11 +10,14 @@
   <body>
     <h3><a href="/">Photoring</a></h3>
     <hr>
-    <div class="collection-list-container">
-      <a href="" class="collection-menu">Collections</a>
-      <ul class="collection-list">
+
+    <div class="collections-menu">
+      <a href="" class="collections-menu__header">Collections</a>
+      <ul class="collections-menu__collections">
       </ul>
     </div>
+
+
     <hr>
     <div>
         {% for flash in get_flashed_messages() %}
@@ -29,8 +32,7 @@
     <footer>Made by Tiffany Lo</footer>
 
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-    <script src="/static/js/dropdown-menu.js"></script>
-
+    <script src="/static/js/dropdown.js"></script>
     {% block page_specific_scripts %}
     {% endblock %}
   </body>
