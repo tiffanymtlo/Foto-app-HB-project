@@ -8,7 +8,7 @@ $(function() {
     if (!collectionInfoList) {
       $.get('/collections', function(response) {
         collectionInfoList = response;
-        console.log(response);
+
         const collectionItemsList = collectionInfoList.map(function(collection) {
           const $collectionLink = $('<a>', {
             'class': 'collection__link',

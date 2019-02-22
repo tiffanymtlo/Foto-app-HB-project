@@ -176,7 +176,13 @@ def show_collections(collection_id):
         boundingbox_list = []
         for person in photo.persons:
             person_photo = PersonPhoto.query.filter(PersonPhoto.person == person, PersonPhoto.photo == photo).first();
-            boundingbox_list.append({'face_top_percentage': person_photo.face_top_percentage, 'face_left_percentage': person_photo.face_left_percentage, 'face_width_percentage': person_photo.face_width_percentage, 'face_height_percentage': person_photo.face_height_percentage})
+            boundingbox_list.append({
+                'person_photo_id': person_photo.id,
+                'face_top_percentage': person_photo.face_top_percentage,
+                'face_left_percentage': person_photo.face_left_percentage,
+                'face_width_percentage': person_photo.face_width_percentage,
+                'face_height_percentage': person_photo.face_height_percentage,
+            })
         boundingbox_dict[photo.id] = boundingbox_list
 
     return render_template('collections.html', collection_id=collection_id, photos=photo_list, url_dict=url_dict, persons=person_list, cropped_faces_dict=cropped_face_images_dict, boundingbox_dict=boundingbox_dict)

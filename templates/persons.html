@@ -6,11 +6,13 @@
 
 {% block content %}
   <div>
-    Person {{ person.id }}
-    <img class="face-thumbnail" src="{{ cropped_face_image }}" height="50" /> in
-    <a href="/collections/{{ collection_id }}">
-      Collection {{ collection_id }}
-    </a>
+    <h1>
+      Person {{ person.id }}
+      <img class="face-thumbnail" src="{{ cropped_face_image }}" /> in
+      <a href="/collections/{{ collection_id }}">
+        Collection {{ collection_id }}
+      </a>
+    </h1>
     {% if person.name %}
       Name: {{ person.name }}
     {% endif %}
@@ -21,8 +23,7 @@
       <ul>
       {% for id, url in url_dict.items() %}
         <li>
-          <!-- <a class="photo-container persons-page-photo-container" href="/photos/{{ id }}"> -->
-          <a class="photo-container" href="/photos/{{ id }}">
+          <a class="photo-container" href="/photos/{{ id }}" style="width:500px">
             <img class="photo" src="{{ url }}" title="Photo {{ id }}" />
             {% if id in boundingbox_dict %}
               <div

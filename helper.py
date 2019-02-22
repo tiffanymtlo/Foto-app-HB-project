@@ -116,7 +116,7 @@ def search_faces(collection_id, face_id):
         CollectionId=collection_name,
         FaceId=face_id,
         MaxFaces=123,
-        FaceMatchThreshold=75.0
+        FaceMatchThreshold=80.0
     )
 
     same_person_face_ids = [

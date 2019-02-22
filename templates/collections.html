@@ -6,17 +6,18 @@
 
 {% block content %}
   <div>
-    <h2>Collection {{ collection_id }}</h2>
+    <h1>Collection {{ collection_id }}</h1>
     <h4>Photos:</h4>
     <ul>
     {% for photo in photos %}
       <li>
-        <a class="photo-container" href="/photos/{{ photo.id }}" title="Photo{{ photo.id }}" width="300">
-          <img class="photo" src="{{ url_dict[photo.id] }}" width="300" />
+        <a class="photo-container" href="/photos/{{ photo.id }}" title="Photo{{ photo.id }}" style="width:300px">
+          <img class="photo" src="{{ url_dict[photo.id] }}" />
           {% if photo.id in boundingbox_dict %}
             {% for person_box in boundingbox_dict[photo.id] %}
               <div
                 class="tag"
+                data-person-photo-id=""
                 data-id="{{ photo.id }}"
                 data-top="{{ person_box.face_top_percentage }}"
                 data-left="{{ person_box.face_left_percentage }}"
@@ -35,7 +36,7 @@
     {% for person in persons %}
       <li>
         <a href="/persons/{{ person.id }}">
-          <img class="face-thumbnail" src="{{ cropped_faces_dict[person.id] }}" height="50" />
+          <img class="face-thumbnail" src="{{ cropped_faces_dict[person.id] }}" />
           Person {{ person.id }}
         </a>
       </li>
