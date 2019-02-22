@@ -11,11 +11,20 @@
     <ul>
     {% for photo in photos %}
       <li>
-        <a class="photo-container" href="/photos/{{ photo.id }}">
-          Photo {{ photo.id }}
-          <br />
+        <a class="photo-container" href="/photos/{{ photo.id }}" title="Photo{{ photo.id }}" width="300">
           <img class="photo" src="{{ url_dict[photo.id] }}" width="300" />
-          
+          {% if photo.id in boundingbox_dict %}
+            {% for person_box in boundingbox_dict[photo.id] %}
+              <div
+                class="tag"
+                data-id="{{ photo.id }}"
+                data-top="{{ person_box.face_top_percentage }}"
+                data-left="{{ person_box.face_left_percentage }}"
+                data-width="{{ person_box.face_width_percentage }}"
+                data-height="{{ person_box.face_height_percentage}}"
+              ></div>
+            {% endfor %}
+          {% endif %}
         </a>
       </li>
     {% endfor %}

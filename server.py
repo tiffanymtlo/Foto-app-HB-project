@@ -171,15 +171,15 @@ def show_collections(collection_id):
     cropped_face_images_dict = make_cropped_face_images_dict(person_list)
     url_dict = make_photos_urls_dict(photo_list)
 
-    # boundingbox_dict = {}
-    # for photo in photo_list:
-    #     for person in photo.persons:
-    #         person_photo = PersonPhoto.query.filter(PersonPhoto.person == person, PersonPhoto.photo == photo).first();
-    #         boundingbox_dict
-    #         boundingbox_dict[photo.id] = boundingbox_dict.get(photo.id, {}) + { person.id: {'width': photo.width, 'height': photo.height, 'face_top_percentage': person_photo.face_top_percentage, 'face_left_percentage': person_photo.face_left_percentage, 'face_width_percentage': person_photo.face_width_percentage, 'face_height_percentage': person_photo.face_height_percentage}}
-    # print(boundingbox_dict)
+    boundingbox_dict = {}
+    for photo in photo_list:
+        boundingbox_list = []
+        for person in photo.persons:
+            person_photo = PersonPhoto.query.filter(PersonPhoto.person == person, PersonPhoto.photo == photo).first();
+            boundingbox_list.append({'face_top_percentage': person_photo.face_top_percentage, 'face_left_percentage': person_photo.face_left_percentage, 'face_width_percentage': person_photo.face_width_percentage, 'face_height_percentage': person_photo.face_height_percentage})
+        boundingbox_dict[photo.id] = boundingbox_list
 
-    return render_template('collections.html', collection_id=collection_id, photos=photo_list, url_dict=url_dict, persons=person_list, cropped_faces_dict=cropped_face_images_dict)
+    return render_template('collections.html', collection_id=collection_id, photos=photo_list, url_dict=url_dict, persons=person_list, cropped_faces_dict=cropped_face_images_dict, boundingbox_dict=boundingbox_dict)
 
 
 @app.route('/persons/<int:person_id>')
@@ -188,7 +188,6 @@ def person_detail(person_id):
     """ FIX THE HTML LATER """
     person = Person.query.get(person_id)
     photo_list = person.photos
-    # person_photo_list = person.person_photo
     collection_id = person.collection_id
 
     cropped_face_image = convert_photo_byte_string_to_url(person.person_photo[0].cropped_face_image)
@@ -197,7 +196,7 @@ def person_detail(person_id):
     boundingbox_dict = {}
     for photo in photo_list:
         person_photo = PersonPhoto.query.filter(PersonPhoto.person == person, PersonPhoto.photo == photo).first();
-        boundingbox_dict[photo.id] = {'width': photo.width, 'height': photo.height, 'face_top_percentage': person_photo.face_top_percentage, 'face_left_percentage': person_photo.face_left_percentage, 'face_width_percentage': person_photo.face_width_percentage, 'face_height_percentage': person_photo.face_height_percentage}
+        boundingbox_dict[photo.id] = {'face_top_percentage': person_photo.face_top_percentage, 'face_left_percentage': person_photo.face_left_percentage, 'face_width_percentage': person_photo.face_width_percentage, 'face_height_percentage': person_photo.face_height_percentage}
 
     return render_template('persons.html', collection_id=collection_id, person=person, url_dict=photo_url_dict, cropped_face_image=cropped_face_image, boundingbox_dict=boundingbox_dict)
 
