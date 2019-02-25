@@ -1,32 +1,26 @@
 import boto3, botocore
 import base64
-
 from PIL import Image, ImageDraw
 import io
-
 from secret import bucket
+####### Delete pprint after the project is done
 import pprint
-
 # for print pretty on API response objects
 pp = pprint.PrettyPrinter(indent=4)
 
-# Using s3
+# Using s3 and rekognition
 s3 = boto3.client('s3')
-# Using Amazon rekognition
 rekognition = boto3.client('rekognition')
 
 
-""" SOMETHING TO CHANGE LATER!!!
-2. error handling of upload_file_to_s3
-3. hide bucket name"""
+""" SOMETHING TO CHANGE LATER!!!"""
 
 
-# helper function to upload files to Amazon S3
+# Upload files to Amazon S3
 def upload_file_to_s3(file, bucket_name, collection_id, acl='private'):
     """ DOCS: http://zabana.me/notes/upload-files-amazon-s3-flask.html """
     key_name = 'collection{}/{}'.format(collection_id, file.filename)
 
-    # uploading a file object to Amazon S3
     """ setting Content_Type allows users to read the file rather than
         to prompt users to download the files """
     s3.upload_fileobj(
@@ -43,23 +37,18 @@ def upload_file_to_s3(file, bucket_name, collection_id, acl='private'):
 
 
 def get_photo_bytestring_from_s3(bucket_name, key_name):
-
-    # getting a file object from s3
+    # Get the file object from s3 and return its byte string
     response = s3.get_object(Bucket=bucket_name, Key=key_name)
-    # reading in the byte string from the response
-    byte_string = response['Body'].read()
 
-    return byte_string
+    return response['Body'].read()
 
 
 def convert_photo_byte_string_to_url(byte_string):
-    url = 'data:image/jpeg;base64,' + base64.b64encode(byte_string).decode('utf8')
-
-    return url
+    return 'data:image/jpeg;base64,' + base64.b64encode(byte_string).decode('utf8')
 
 
 def create_rekognition_collection(collection_id):
-    # create a rekognition collection for a collection of photos to store indexed faces
+    # Create a rekognition collection to store indexed faces
     try:
         collection_name = 'collection{}'.format(collection_id)
         response = rekognition.create_collection(CollectionId=collection_name)
@@ -89,12 +78,11 @@ def index_faces(collection_id, path, photo_id):
 
 
 def delete_rekognition_collection(collection_id):
-
     collection_name = 'collection{}'.format(collection_id)
     response = rekognition.delete_collection(CollectionId=collection_name)
 
 
-def get_face_id_external_image_id_dict(collection_id):
+def get_face_id_image_info_dict(collection_id):
     collection_name = 'collection{}'.format(collection_id)
     response = rekognition.list_faces(CollectionId=collection_name)
     result = {}
@@ -126,7 +114,6 @@ def search_faces(collection_id, face_id):
 
 
 def make_photos_urls_dict(photo_list):
-
     url_dict={}
     for photo in photo_list:
         url_dict[photo.id] = convert_photo_byte_string_to_url(photo.byte_string)

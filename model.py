@@ -44,7 +44,6 @@ class Photo(db.Model):
     person_photo = db.relationship('PersonPhoto', backref='photo')
 
     def __repr__(self):
-
         return f"""<Photo id={self.id}, collection_id={self.collection_id}, s3_key={self.s3_key}>"""
 
 
@@ -61,7 +60,6 @@ class Person(db.Model):
     person_photo = db.relationship('PersonPhoto', backref='person')
 
     def __repr__(self):
-
         return f"""<Person id={self.id}, name={self.name}, collection_id={self.collection_id}>"""
 
 
@@ -80,7 +78,6 @@ class PersonPhoto(db.Model):
     cropped_face_image = db.Column(db.LargeBinary, nullable=False)
 
     def __repr__(self):
-
         return f"""<PersonPhoto id={self.id}, person_id={self.person_id}, photo_id={self.photo_id}, face_width_percentage={self.face_width_percentage}, face_height_percentage={self.face_height_percentage}, face_top_percentage={self.face_top_percentage}, face_left_percentage={self.face_left_percentage}>"""
 
 
@@ -90,7 +87,8 @@ class PersonPhoto(db.Model):
 def connect_to_db(app, database_link='postgresql:///photos_identify'):
     """Connect the database to the Flask app."""
 
-    # Configure to use our PstgreSQL database
+    # Configure to use database
+    # Use photos_identify database if no database gets passed in
     app.config['SQLALCHEMY_DATABASE_URI'] = database_link
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.app = app
@@ -98,8 +96,8 @@ def connect_to_db(app, database_link='postgresql:///photos_identify'):
 
 
 if __name__ == "__main__":
-    # As a convenience, if we run this module interactively, it will leave
-    # you in a state of being able to work with the database directly.
+    # As a convenience, if this module is run interactively, it will leave
+    # in a state of being able to work with the database directly.
 
     from server import app
     connect_to_db(app)
