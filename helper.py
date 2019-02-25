@@ -105,8 +105,6 @@ def get_face_id_external_image_id_dict(collection_id):
             'bounding_box': face['BoundingBox'],
         }
 
-    # pp.pprint(result)
-
     return result
 
 

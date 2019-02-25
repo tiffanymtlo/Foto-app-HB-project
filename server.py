@@ -62,7 +62,6 @@ def index():
 
 @app.route('/upload', methods=['POST'])
 def upload():
-
     """ DOCS: http://zabana.me/notes/upload-files-amazon-s3-flask.html """
 
     files = request.files.getlist("user_file")

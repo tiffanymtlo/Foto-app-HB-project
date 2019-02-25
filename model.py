@@ -87,11 +87,11 @@ class PersonPhoto(db.Model):
 ##############################################################################
 # Helper functions
 
-def connect_to_db(app):
+def connect_to_db(app, database_link='postgresql:///photos_identify'):
     """Connect the database to the Flask app."""
 
     # Configure to use our PstgreSQL database
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///photos_identify'
+    app.config['SQLALCHEMY_DATABASE_URI'] = database_link
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.app = app
     db.init_app(app)
