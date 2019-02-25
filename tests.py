@@ -1,6 +1,6 @@
 import unittest
 import server
-from model import Collection, Photo, Person, PersonPhoto, connect_to_db, db, example_data
+from model import Collection, Photo, Person, PersonPhoto, connect_to_db, db
 from server import app
 from helper import (
     upload_file_to_s3,
@@ -13,6 +13,9 @@ from helper import (
     get_bounding_box_info_from_dict,
     make_cropped_face_image,
     delete_rekognition_collection,
+    make_cropped_face_images_dict,
+    make_photos_urls_dict,
+    convert_photo_byte_string_to_url,
 )
 import io
 
@@ -22,10 +25,7 @@ class MockFlaskTests(unittest.TestCase):
         self.client = app.test_client()
         app.config['TESTING'] = True
         connect_to_db(app, 'postgresql:///testdb')
-
-        # Create tables and add sample data
         db.create_all()
-        # example_data()
 
         def _mock_upload_file_to_s3(file, bucket_name, collection_id, acl='private'):
             return 'collection1/photo1.jpg'
@@ -72,6 +72,17 @@ class MockFlaskTests(unittest.TestCase):
         def _mock_delete_rekognition_collection(collection_id):
             return None
 
+        def _mock_make_cropped_face_images_dict(persons_list):
+            result = {1: 'abcdef', 2: 'hello world'}
+            return result
+
+        def _mock_make_photos_urls_dict(photo_list):
+            result = {1: 'abcdef'}
+            return result
+
+        def _mock_convert_photo_byte_string_to_url(byte_string):
+            return '12345'
+
         server.upload_file_to_s3 = _mock_upload_file_to_s3
         server.get_photo_bytestring_from_s3 = _mock_get_photo_bytestring_from_s3
         server.get_photo_width_height = _mock_get_photo_width_height
@@ -82,6 +93,11 @@ class MockFlaskTests(unittest.TestCase):
         server.get_bounding_box_info_from_dict = _mock_get_bounding_box_info_from_dict
         server.make_cropped_face_image = _mock_make_cropped_face_image
         server.delete_rekognition_collection = _mock_delete_rekognition_collection
+        #########
+        server.make_cropped_face_images_dict = _mock_make_cropped_face_images_dict
+        server.make_photos_urls_dict = _mock_make_photos_urls_dict
+        server.convert_photo_byte_string_to_url = _mock_convert_photo_byte_string_to_url
+        #########
 
     def tearDown(self):
         db.session.close()
@@ -123,6 +139,18 @@ class MockFlaskTests(unittest.TestCase):
                 self.assertEqual(entry.face_left_percentage, 0.4)
 
         self.assertIn(b'Your collection of pictures was processed successfully!', response.data)
+
+
+    def test_index(self):
+        """ Test homepage rendering. """
+        result = self.client.get('/')
+        self.assertIn(b'<h1>Upload your photos</h1>', result.data)
+
+
+    def test_show_collections(self):
+        """ Test collection page rendering. """
+        result = self.client.get('/collections/1')
+        self.assertIn(b'<h1>Collection 1</h1>', result.data)
 
 
 if __name__ == "__main__":
