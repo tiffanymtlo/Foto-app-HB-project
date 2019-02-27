@@ -2,10 +2,12 @@
 
 {% block page_specific_style %}
   <link rel="stylesheet" href="/static/css/photo-tag.css" />
+  <link rel="stylesheet" href="/static/css/filter-persons-bar.css" />
   <link rel="stylesheet" href="/static/css/face-thumbnail-tag.css" />
 {% endblock %}
 
 {% block content %}
+  {{ filterpersonsbar(all_persons_list, person_list, cropped_face_image_dict) }}
   <div>
     <h1>
       {% for person in person_list %}
@@ -64,4 +66,5 @@
 
 {% block page_specific_scripts %}
   <script src="/static/js/photo-tag.js"></script>
+  <script src="/static/js/filter-persons-bar.js"></script>
 {% endblock %}

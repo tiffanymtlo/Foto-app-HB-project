@@ -10,15 +10,36 @@
   <body>
     <h3><a href="/">Photoring</a></h3>
     <hr>
-
     <div class="collections-menu">
       <a href="" class="collections-menu__header">Collections</a>
       <ul class="collections-menu__collections">
       </ul>
     </div>
-
-
     <hr>
+    {% macro filterpersonsbar(persons, chosen_persons, cropped_faces_dict) -%}
+      <div class="filter-bar-container">
+        <ul class="filter-bar">
+          {% for person in persons %}
+            <li class="filter-item">
+              <div class="filter-item__container" title="Person {{ person.id }}">
+                {% if person in chosen_persons %}
+                  <input class="filter-item__checkbox" type="checkbox" name="person_ids[]" value="{{ person.id }}" checked />
+                {% else %}
+                  <input class="filter-item__checkbox" type="checkbox" name="person_ids[]" value="{{ person.id }}" />
+                {% endif %}
+                <img class="face-thumbnail" src="{{ cropped_faces_dict[person.id] }}" />
+              </div>
+            </li>
+          {% endfor %}
+        </ul>
+        <a class="persons__link" href="#">
+          <button class="persons__link-btn" type="button">
+            Filter persons
+          </button>
+        </a>
+        <hr>
+      </div>
+    {%- endmacro %}
     <div>
         {% for flash in get_flashed_messages() %}
           <div>{{ flash }}</div>
@@ -27,7 +48,6 @@
         {% block content %}
         {% endblock %}
     </div>
-
     <hr>
     <footer>Made by Tiffany Lo</footer>
 

@@ -3,29 +3,12 @@
 {% block page_specific_style %}
   <link rel="stylesheet" href="/static/css/photo-tag.css" />
   <link rel="stylesheet" href="/static/css/collections.css" />
+  <link rel="stylesheet" href="/static/css/filter-persons-bar.css" />
+  <link rel="stylesheet" href="/static/css/face-thumbnail-tag.css" />
 {% endblock %}
 
 {% block content %}
-
-    <div class="filter-bar-container">
-      <ul class="filter-bar">
-        {% for person in persons %}
-          <li class="filter-item">
-            <div class="filter-item__container" title="Person {{ person.id }}">
-              <input class="filter-item__checkbox" type="checkbox" name="person_ids[]" value="{{ person.id }}" checked />
-              <img class="face-thumbnail" src="{{ cropped_faces_dict[person.id] }}" />
-            </div>
-          </li>
-        {% endfor %}
-      </ul>
-      <a class="persons__link" href="#">
-        <button class="persons__link-btn" type="button">
-          Filter persons
-        </button>
-      </a>
-      <hr>
-    </div>
-
+  {{ filterpersonsbar(persons, persons, cropped_faces_dict) }}
   <div>
     <h1>Collection {{ collection_id }}</h1>
     <h4>Photos:</h4>
@@ -55,7 +38,7 @@
     <ul>
     {% for person in persons %}
       <li>
-        <a class="person-anchor" href="/persons?person_ids[]={{ person.id }}" title="Person {{ person.id }}">
+        <a class="thumbnail-anchor" href="/persons?person_ids[]={{ person.id }}" title="Person {{ person.id }}">
           <img class="face-thumbnail" src="{{ cropped_faces_dict[person.id] }}" />
         </a>
       </li>
@@ -66,5 +49,5 @@
 
 {% block page_specific_scripts %}
   <script src="/static/js/photo-tag.js"></script>
-  <script src="/static/js/persons-checkbox.js"></script>
+  <script src="/static/js/filter-persons-bar.js"></script>
 {% endblock %}

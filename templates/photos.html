@@ -2,9 +2,12 @@
 
 {% block page_specific_style %}
   <link rel="stylesheet" href="/static/css/photo-tag.css" />
+  <link rel="stylesheet" href="/static/css/filter-persons-bar.css" />
+  <link rel="stylesheet" href="/static/css/face-thumbnail-tag.css" />
 {% endblock %}
 
 {% block content %}
+  {{ filterpersonsbar(all_persons_list, persons, cropped_faces_dict) }}
   <div>
     <h1>
       Photo {{ photo.id }} in
@@ -40,9 +43,8 @@
       <ul>
       {% for person in persons %}
         <li>
-          <a href="/persons?person_ids[]={{ person.id }}">
+          <a class="thumbnail-anchor" href="/persons?person_ids[]={{ person.id }}">
             <img class="face-thumbnail" src="{{ cropped_faces_dict[person.id] }}" />
-            Person {{ person.id }}
           </a>
         </li>
       {% endfor %}
@@ -54,4 +56,5 @@
 
 {% block page_specific_scripts %}
   <script src="/static/js/photo-tag.js"></script>
+  <script src="/static/js/filter-persons-bar.js"></script>
 {% endblock %}
