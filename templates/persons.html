@@ -12,7 +12,7 @@
         <a
           title="Person {{ person.id }}"
           class="thumbnail-anchor"
-          href="/persons?persons[]={{ person.id }}"
+          href="/persons?person_ids[]={{ person.id }}"
         >
           <img class="face-thumbnail" src="{{ cropped_face_image_dict[person.id] }}" />
         </a>

@@ -196,44 +196,52 @@ def show_collections(collection_id):
 @app.route('/persons', methods=['GET'])
 def person_detail():
     """ Show the list of pictures that this person was in """
-    persons = request.args.getlist('persons[]')
+    person_ids = request.args.getlist('person_ids[]')
+    persons = Person.query.filter(Person.id.in_(person_ids)).all()
 
-    photo_set_list = []
-    person_list = []
-    for person_id in persons:
-        person = Person.query.get(person_id)
-        photo_list = person.photos
-        photo_set = set(photo_list)
-        photo_set_list.append(photo_set)
-        person_list.append(person)
+    unique_photo_set = None
+    for person in persons:
+        if not unique_photo_set:
+            unique_photo_set = set(person.photos)
+        else:
+            unique_photo_set = unique_photo_set.intersection(set(person.photos))
 
-    unique_photo_set = photo_set_list.pop()
-    while(len(photo_set_list) > 0):
-        current_photo_set = photo_set_list.pop()
-        unique_photo_set = unique_photo_set.intersection(current_photo_set)
-
-    cropped_face_image_dict = make_cropped_face_images_dict(person_list)
+    cropped_face_image_dict = make_cropped_face_images_dict(persons)
     photo_url_dict = make_photos_urls_dict(unique_photo_set)
+    unique_photo_ids = [photo.id for photo in unique_photo_set]
+
+    photo_data = db.session.query(
+        Photo.id,
+        Person.id,
+        PersonPhoto.face_top_percentage,
+        PersonPhoto.face_left_percentage,
+        PersonPhoto.face_width_percentage,
+        PersonPhoto.face_height_percentage,
+    ).join(
+        PersonPhoto,
+        Person,
+    ).filter(
+        Photo.id.in_(unique_photo_ids),
+        Person.id.in_(person_ids),
+    ).all()
 
     boundingbox_dict = {}
-    for photo in unique_photo_set:
-        person_bounding_boxes_list = []
-        for person in person_list:
-            person_photo = PersonPhoto.query.filter(PersonPhoto.person == person, PersonPhoto.photo == photo).first()
-            person_bounding_boxes_list.append({
-                    person.id: {
-                            'face_top_percentage': person_photo.face_top_percentage,
-                            'face_left_percentage': person_photo.face_left_percentage,
-                            'face_width_percentage': person_photo.face_width_percentage,
-                            'face_height_percentage': person_photo.face_height_percentage
-                    }
-            })
+    for photo_id, person_id, face_top, face_left, face_width, face_height in photo_data:
+        if photo_id not in boundingbox_dict:
+            boundingbox_dict[photo_id] = []
 
-        boundingbox_dict[photo.id] = person_bounding_boxes_list
+        boundingbox_dict[photo_id].append({
+            person_id: {
+                'face_top_percentage': face_top,
+                'face_left_percentage': face_left,
+                'face_width_percentage': face_width,
+                'face_height_percentage': face_height,
+            }
+        })
 
     return render_template('persons.html',
                 collection_id=person.collection_id,
-                person_list=person_list,
+                person_list=persons,
                 url_dict=photo_url_dict,
                 cropped_face_image_dict=cropped_face_image_dict,
                 boundingbox_dict=boundingbox_dict
