@@ -6,6 +6,26 @@
 {% endblock %}
 
 {% block content %}
+
+    <div class="filter-bar-container">
+      <ul class="filter-bar">
+        {% for person in persons %}
+          <li class="filter-item">
+            <div class="filter-item__container" title="Person {{ person.id }}">
+              <input class="filter-item__checkbox" type="checkbox" name="person_ids[]" value="{{ person.id }}" checked />
+              <img class="face-thumbnail" src="{{ cropped_faces_dict[person.id] }}" />
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+      <a class="persons__link" href="#">
+        <button class="persons__link-btn" type="button">
+          Filter persons
+        </button>
+      </a>
+      <hr>
+    </div>
+
   <div>
     <h1>Collection {{ collection_id }}</h1>
     <h4>Photos:</h4>
@@ -36,17 +56,11 @@
     {% for person in persons %}
       <li>
         <a class="person-anchor" href="/persons?person_ids[]={{ person.id }}" title="Person {{ person.id }}">
-          <input class="person-item__checkbox" type="checkbox" name="person_ids[]" value="{{ person.id }}" checked />
           <img class="face-thumbnail" src="{{ cropped_faces_dict[person.id] }}" />
         </a>
       </li>
     {% endfor %}
     </ul>
-    <a class="persons__link" href="#">
-      <button class="persons__filter-btn" type="button">
-        Filter persons
-      </button>
-    </a>
   </div>
 {% endblock %}
 

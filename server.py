@@ -244,7 +244,7 @@ def person_detail():
                 person_list=persons,
                 url_dict=photo_url_dict,
                 cropped_face_image_dict=cropped_face_image_dict,
-                boundingbox_dict=boundingbox_dict
+                boundingbox_dict=boundingbox_dict,
             )
 
 
