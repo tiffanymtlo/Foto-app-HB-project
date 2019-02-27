@@ -2,43 +2,62 @@
 
 {% block page_specific_style %}
   <link rel="stylesheet" href="/static/css/photo-tag.css" />
+  <link rel="stylesheet" href="/static/css/face-thumbnail-tag.css" />
 {% endblock %}
 
 {% block content %}
   <div>
     <h1>
-      Person {{ person.id }}
-      <img class="face-thumbnail" src="{{ cropped_face_image }}" /> in
+      {% for person in person_list %}
+        <a
+          title="Person {{ person.id }}"
+          class="thumbnail-anchor"
+          href="/persons?persons[]={{ person.id }}"
+        >
+          <img class="face-thumbnail" src="{{ cropped_face_image_dict[person.id] }}" />
+        </a>
+      {% endfor %}
+      in
       <a href="/collections/{{ collection_id }}">
         Collection {{ collection_id }}
       </a>
     </h1>
-    {% if person.name %}
-      Name: {{ person.name }}
-    {% endif %}
     <br />
     <br />
-    <div>Person {{ person.id }} is found in these photos:</div>
     {% if url_dict %}
+      <div>
+        {% for person in person_list %}
+          Person {{ person.id }}
+        {% endfor %}
+        is(are) found in these photos:
+      </div>
       <ul>
       {% for id, url in url_dict.items() %}
         <li>
-          <a class="photo-container" href="/photos/{{ id }}" style="width:500px">
+          <a class="photo-container" href="/photos/{{ id }}" title="Photo {{ id }}" style="width:500px">
             <img class="photo" src="{{ url }}" title="Photo {{ id }}" />
             {% if id in boundingbox_dict %}
-              <div
-                class="tag"
-                data-id="{{ id }}"
-                data-top="{{ boundingbox_dict[id].face_top_percentage }}"
-                data-left="{{ boundingbox_dict[id].face_left_percentage }}"
-                data-width="{{ boundingbox_dict[id].face_width_percentage }}"
-                data-height="{{ boundingbox_dict[id].face_height_percentage}}"
-              ></div>
+              {% for entry in boundingbox_dict[id] %}
+                {% for person_id in entry %}
+                  <div
+                    class="tag"
+                    data-id="{{ person_id }}"
+                    data-top="{{ entry[person_id].face_top_percentage }}"
+                    data-left="{{ entry[person_id].face_left_percentage }}"
+                    data-width="{{ entry[person_id].face_width_percentage }}"
+                    data-height="{{ entry[person_id].face_height_percentage}}"
+                    title="Person {{ person_id }}"
+                  >
+                  </div>
+                {% endfor %}
+              {% endfor %}
             {% endif %}
           </a>
         </li>
       {% endfor %}
       </ul>
+    {% else %}
+      <div>Oops..The chosen people did not have any photos taken together...</div>
     {% endif %}
   </div>
 {% endblock %}

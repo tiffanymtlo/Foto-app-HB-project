@@ -2,6 +2,7 @@
 
 {% block page_specific_style %}
   <link rel="stylesheet" href="/static/css/photo-tag.css" />
+  <link rel="stylesheet" href="/static/css/collections.css" />
 {% endblock %}
 
 {% block content %}
@@ -34,16 +35,22 @@
     <ul>
     {% for person in persons %}
       <li>
-        <a href="/persons/{{ person.id }}">
+        <a class="person-anchor" href="/persons?persons[]={{ person.id }}" title="Person {{ person.id }}">
+          <input class="person-item__checkbox" type="checkbox" name="persons[]" value="{{ person.id }}" checked />
           <img class="face-thumbnail" src="{{ cropped_faces_dict[person.id] }}" />
-          Person {{ person.id }}
         </a>
       </li>
     {% endfor %}
     </ul>
+    <a class="persons__link" href="#">
+      <button class="persons__link-btn" type="button">
+        Filter persons
+      </button>
+    </a>
   </div>
 {% endblock %}
 
 {% block page_specific_scripts %}
   <script src="/static/js/photo-tag.js"></script>
+  <script src="/static/js/persons-checkbox.js"></script>
 {% endblock %}

@@ -49,7 +49,7 @@ def index():
 def upload():
     """ DOCS: http://zabana.me/notes/upload-files-amazon-s3-flask.html """
 
-    files = request.files.getlist("user_file")
+    files = request.files.getlist('user_file')
 
     # Check if there's a 'user_file' key
     if len(files) == 0:
@@ -191,32 +191,112 @@ def show_collections(collection_id):
             )
 
 
-@app.route('/persons/<int:person_id>')
-def person_detail(person_id):
-    """ Show the list of pictures that this person was in """
-    person = Person.query.get(person_id)
-    photo_list = person.photos
 
-    cropped_face_image = convert_photo_byte_string_to_url(person.person_photo[0].cropped_face_image)
-    photo_url_dict = make_photos_urls_dict(photo_list)
+
+@app.route('/persons', methods=['GET'])
+def person_detail():
+    """ Show the list of pictures that this person was in """
+    persons = request.args.getlist('persons[]')
+
+    photo_set_list = []
+    person_list = []
+    for person_id in persons:
+        person = Person.query.get(person_id)
+        photo_list = person.photos
+        photo_set = set(photo_list)
+        photo_set_list.append(photo_set)
+        person_list.append(person)
+
+    unique_photo_set = photo_set_list.pop()
+    while(len(photo_set_list) > 0):
+        current_photo_set = photo_set_list.pop()
+        unique_photo_set = unique_photo_set.intersection(current_photo_set)
+
+    cropped_face_image_dict = make_cropped_face_images_dict(person_list)
+    photo_url_dict = make_photos_urls_dict(unique_photo_set)
 
     boundingbox_dict = {}
-    for photo in photo_list:
-        person_photo = PersonPhoto.query.filter(PersonPhoto.person == person, PersonPhoto.photo == photo).first()
-        boundingbox_dict[photo.id] = {
-                'face_top_percentage': person_photo.face_top_percentage,
-                'face_left_percentage': person_photo.face_left_percentage,
-                'face_width_percentage': person_photo.face_width_percentage,
-                'face_height_percentage': person_photo.face_height_percentage
-        }
+    for photo in unique_photo_set:
+        person_bounding_boxes_list = []
+        for person in person_list:
+            person_photo = PersonPhoto.query.filter(PersonPhoto.person == person, PersonPhoto.photo == photo).first()
+            person_bounding_boxes_list.append({
+                    person.id: {
+                            'face_top_percentage': person_photo.face_top_percentage,
+                            'face_left_percentage': person_photo.face_left_percentage,
+                            'face_width_percentage': person_photo.face_width_percentage,
+                            'face_height_percentage': person_photo.face_height_percentage
+                    }
+            })
+
+        boundingbox_dict[photo.id] = person_bounding_boxes_list
 
     return render_template('persons.html',
                 collection_id=person.collection_id,
-                person=person,
+                person_list=person_list,
                 url_dict=photo_url_dict,
-                cropped_face_image=cropped_face_image,
+                cropped_face_image_dict=cropped_face_image_dict,
                 boundingbox_dict=boundingbox_dict
             )
+
+
+
+
+    # person = Person.query.get(person_id)
+    # photo_list = person.photos
+    #
+    # cropped_face_image = convert_photo_byte_string_to_url(person.person_photo[0].cropped_face_image)
+    # photo_url_dict = make_photos_urls_dict(photo_list)
+    #
+    # boundingbox_dict = {}
+    # for photo in photo_list:
+    #     person_photo = PersonPhoto.query.filter(PersonPhoto.person == person, PersonPhoto.photo == photo).first()
+    #     boundingbox_dict[photo.id] = {
+    #             'face_top_percentage': person_photo.face_top_percentage,
+    #             'face_left_percentage': person_photo.face_left_percentage,
+    #             'face_width_percentage': person_photo.face_width_percentage,
+    #             'face_height_percentage': person_photo.face_height_percentage
+    #     }
+    #
+    # return render_template('persons.html',
+    #             collection_id=person.collection_id,
+    #             person=person,
+    #             url_dict=photo_url_dict,
+    #             cropped_face_image=cropped_face_image,
+    #             boundingbox_dict=boundingbox_dict
+    #         )
+
+
+
+
+
+
+# @app.route('/persons/<int:person_id>')
+# def person_detail(person_id):
+#     """ Show the list of pictures that this person was in """
+#     person = Person.query.get(person_id)
+#     photo_list = person.photos
+#
+#     cropped_face_image = convert_photo_byte_string_to_url(person.person_photo[0].cropped_face_image)
+#     photo_url_dict = make_photos_urls_dict(photo_list)
+#
+#     boundingbox_dict = {}
+#     for photo in photo_list:
+#         person_photo = PersonPhoto.query.filter(PersonPhoto.person == person, PersonPhoto.photo == photo).first()
+#         boundingbox_dict[photo.id] = {
+#                 'face_top_percentage': person_photo.face_top_percentage,
+#                 'face_left_percentage': person_photo.face_left_percentage,
+#                 'face_width_percentage': person_photo.face_width_percentage,
+#                 'face_height_percentage': person_photo.face_height_percentage
+#         }
+#
+#     return render_template('persons.html',
+#                 collection_id=person.collection_id,
+#                 person=person,
+#                 url_dict=photo_url_dict,
+#                 cropped_face_image=cropped_face_image,
+#                 boundingbox_dict=boundingbox_dict
+#             )
 
 
 @app.route('/photos/<int:photo_id>')

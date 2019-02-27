@@ -27,7 +27,7 @@
             <a
               title="Person {{ person_photo.person.id }}"
               class="tag-anchor"
-              href="/persons/{{ person_photo.person.id }}"
+              href="/persons?persons[]={{ person_photo.person.id }}"
             ></a>
           </div>
         {% endfor %}
@@ -40,7 +40,7 @@
       <ul>
       {% for person in persons %}
         <li>
-          <a href="/persons/{{ person.id }}">
+          <a href="/persons?persons[]={{ person.id }}">
             <img class="face-thumbnail" src="{{ cropped_faces_dict[person.id] }}" />
             Person {{ person.id }}
           </a>
