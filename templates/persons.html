@@ -18,6 +18,9 @@
         >
           <img class="face-thumbnail" src="{{ cropped_face_image_dict[person.id] }}" />
         </a>
+        {% if person.name %}
+          <span>({{ person.name }})</span>
+        {% endif %}
       {% endfor %}
       in
       <a href="/collections/{{ collection_id }}">

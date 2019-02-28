@@ -291,6 +291,22 @@ def get_all_collections():
     return jsonify(data)
 
 
+@app.route('/edit_name', methods=['POST'])
+def edit_name():
+    """ Update person's name in the database """
+    try:
+        person_id = request.form['person_id']
+        name = request.form['name']
+        person = Person.query.get(person_id)
+        person.name = name
+        db.session.commit()
+
+        return 'True'
+
+    except:
+        return 'False'
+
+
 if __name__ == '__main__':
     # Set app configurations
     # True to enable invoking the DebugToolbarExtension
