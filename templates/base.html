@@ -48,6 +48,15 @@
         {% block content %}
         {% endblock %}
     </div>
+
+    {% block signin_form %}
+      {% if 'username' in session %}
+        <a href="/logout"><button class="logout-btn" type="button">Logout</button></a>
+      {% else %}
+        <a href="/login"><button class="login-btn" type="button">Login</button></a>
+      {% endif %}
+    {% endblock %}
+
     <hr>
     <footer>Made by Tiffany Lo</footer>
 

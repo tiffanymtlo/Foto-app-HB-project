@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block page_specific_style %}
+{% endblock %}
+
+{% block content %}
+  <h1 class="register__header">New user </h1>
+  <form class="register__form" action="/register/new_user" method="POST">
+    <div class="register-form__username-container">
+      Username:
+      <input type="text" name="username" />
+    </div>
+    <div class="register-form__pwd-container">
+      Password:
+      <input type="text" name="password" />
+    </div>
+    <div class="register-form__confirm-pwd-container">
+      Confirm Password:
+      <input type="text" name="confirm_password" />
+    </div>
+    <button class="form__sigin-btn" type="submit">Register</button>
+  </form>
+{% endblock %}
+
+{% block page_specific_scripts %}
+{% endblock %}

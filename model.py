@@ -10,20 +10,34 @@ database_name = 'photos_identify'
 ##############################################################################
 # Model definitions
 
+class User(db.Model):
+    """ Users table """
+
+    __tablename__ = 'users'
+
+    id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    username = db.Column(db.String(50), nullable=False, unique=True)
+    password = db.Column(db.String(50), nullable=False)
+
+    collections = db.relationship('Collection', backref='user')
+
+    def __repr__(self):
+        """ Print a helpful representation of the object """
+
+        return f"""<User id={self.id}, username={self.username}>"""
+
 class Collection(db.Model):
     """ Collections table """
 
     __tablename__ = 'collections'
 
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    """Make it REQUIRED later"""
     time_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     time_processed = db.Column(db.DateTime)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     password = db.Column(db.String(50))
 
     def __repr__(self):
-        """ Print a helpful representation of the object """
-
         return f"""<Collection id={self.id}, time_created={self.time_created}>"""
 
 

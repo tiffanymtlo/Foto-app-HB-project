@@ -2,7 +2,7 @@
 
 from jinja2 import StrictUndefined
 from flask import (Flask, render_template, redirect, request, flash, session, jsonify)
-from model import connect_to_db, db, Collection, Photo, Person, PersonPhoto
+from model import connect_to_db, db, User, Collection, Photo, Person, PersonPhoto
 from helper import (
 upload_file_to_s3,
 get_photo_bytestring_from_s3,
@@ -39,10 +39,92 @@ app.secret_key = APP_SECRET_KEY
 # Raise an error when an undefined variable is used in Jinja2
 app.jinja_env.undefined = StrictUndefined
 
+
+@app.route('/login')
+def login():
+    if 'username' in session:
+        return redirect('/')
+    else:
+        return render_template('login.html')
+
+
+@app.route('/login/validate')
+def validate_login():
+    check_username = request.args.get('username')
+    check_password = request.args.get('password')
+
+    user = User.query.filter(User.username == check_username).first()
+    if user:
+        if user.password == check_password:
+            flash('Welcome back, {}. You are successfully logged in.'.format(user.username))
+            session['username'] = user.username
+            return redirect('/')
+        else:
+            flash('Your username and password did not match. Please try again.')
+            return redirect('/login')
+    else:
+        flash('Looks like you are not registered. Please register to start facial recognizing your photos.')
+        return redirect('/register')
+
+
+@app.route('/register')
+def register():
+    if 'username' in session:
+        return redirect('/')
+    else:
+        return render_template('register.html')
+
+
+@app.route('/register/new_user', methods=['POST'])
+def register_new_user():
+    new_username = request.form.get('username')
+    new_pwd = request.form.get('password')
+    new_confirm_pwd = request.form.get('confirm_password')
+
+    if new_username == '':
+        flash('Please put in a username.')
+        return redirect('/register')
+    elif new_pwd == '':
+        flash('Please put in a password.')
+        return redirect('/register')
+    elif new_confirm_pwd == '':
+        flash('Please put in a confirm password.')
+        return redirect('/register')
+
+    all_users = User.query.all()
+    for user in all_users:
+        if user.username == new_username:
+            flash('This username is already registered. Please register with another username or sign in.')
+            return redirect('/register')
+
+    if new_pwd != new_confirm_pwd:
+        flash('The two passwords did not match. Please try again.')
+        return redirect('/register')
+
+    new_user = User(username=new_username, password=new_pwd)
+    db.session.add(new_user)
+    db.session.commit()
+    session['username'] = new_user.username
+    flash('You have successfully registered, {}. You can start recognizing faces!'.format(new_user.username))
+
+    return redirect('/')
+
+
+@app.route('/logout')
+def logout():
+    del session['username']
+    flash('You have successfully logged out.')
+    return redirect('/login')
+
+
 @app.route('/')
 def index():
     """ Show the area for uploading pictures """
-    return render_template('index.html')
+    if 'username' in session:
+        return render_template('index.html')
+    else:
+        flash('Please log in to start recognizing faces.')
+        return redirect('/login')
 
 
 @app.route('/upload', methods=['POST'])
@@ -50,6 +132,8 @@ def upload():
     """ DOCS: http://zabana.me/notes/upload-files-amazon-s3-flask.html """
 
     files = request.files.getlist('user_file')
+    user = User.query.filter(User.username == session['username']).first()
+    print(user)
 
     # Check if there's a 'user_file' key
     if len(files) == 0:
@@ -57,7 +141,7 @@ def upload():
         return redirect('/')
 
     # Create a new collection instance and commit to database
-    new_collection = Collection()
+    new_collection = Collection(user=user)
     db.session.add(new_collection)
     db.session.commit()
 
