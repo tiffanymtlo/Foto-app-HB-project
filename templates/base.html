@@ -49,7 +49,7 @@
         {% endblock %}
     </div>
 
-    {% block signin_form %}
+    {% block login_logout_button %}
       {% if 'username' in session %}
         <a href="/logout"><button class="logout-btn" type="button">Logout</button></a>
       {% else %}

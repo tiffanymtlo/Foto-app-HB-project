@@ -35,7 +35,7 @@ class Collection(db.Model):
     time_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     time_processed = db.Column(db.DateTime)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    password = db.Column(db.String(50))
+    uuid = db.Column(db.String(200), nullable=False)
 
     def __repr__(self):
         return f"""<Collection id={self.id}, time_created={self.time_created}>"""

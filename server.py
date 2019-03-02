@@ -20,6 +20,7 @@ get_bounding_box_info_from_dict
 )
 from werkzeug.utils import secure_filename
 from datetime import datetime
+import uuid
 from secret import bucket, APP_SECRET_KEY
 from flask_debugtoolbar import DebugToolbarExtension
 
@@ -133,7 +134,6 @@ def upload():
 
     files = request.files.getlist('user_file')
     user = User.query.filter(User.username == session['username']).first()
-    print(user)
 
     # Check if there's a 'user_file' key
     if len(files) == 0:
@@ -141,7 +141,8 @@ def upload():
         return redirect('/')
 
     # Create a new collection instance and commit to database
-    new_collection = Collection(user=user)
+    uuid_string = str(uuid.uuid4())
+    new_collection = Collection(user=user, uuid=uuid_string)
     db.session.add(new_collection)
     db.session.commit()
 
@@ -275,8 +276,6 @@ def show_collections(collection_id):
             )
 
 
-
-
 @app.route('/persons', methods=['GET'])
 def person_detail():
     """ Show the list of pictures that this person was in """
@@ -363,7 +362,8 @@ def photo_detail(photo_id):
 @app.route('/collections')
 def get_all_collections():
     """Get json of available collections. """
-    collections = Collection.query.all()
+    user = User.query.filter(User.username == session['username']).first()
+    collections = Collection.query.filter(Collection.user == user, Collection.time_processed != None).all()
     data = []
     for collection in collections:
         data.append({
@@ -389,6 +389,11 @@ def edit_name():
 
     except:
         return 'False'
+
+
+@app.route('/c/<string:collection_uuid>')
+def show_collection_by_uuid(collection_uuid):
+    return redirect('/')
 
 
 if __name__ == '__main__':
