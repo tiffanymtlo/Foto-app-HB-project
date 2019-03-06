@@ -280,6 +280,27 @@ def show_collections(collection_id):
 def person_detail():
     """ Show the list of pictures that this person was in """
     person_ids = request.args.getlist('person_ids[]')
+    (collection_id,
+    persons,
+    photo_url_dict,
+    cropped_face_image_dict,
+    boundingbox_dict,
+    all_persons_list,
+    data_personids_string) = person_detail_render_info(person_ids)
+
+    return render_template('persons.html',
+                collection_id=collection_id,
+                person_list=persons,
+                url_dict=photo_url_dict,
+                cropped_face_image_dict=cropped_face_image_dict,
+                boundingbox_dict=boundingbox_dict,
+                all_persons_list=all_persons_list,
+                data_personids_string=data_personids_string,
+                is_from_sharable_link=False
+            )
+
+
+def person_detail_render_info(person_ids):
     persons = Person.query.filter(Person.id.in_(person_ids)).all()
 
     data_personids = []
@@ -330,15 +351,13 @@ def person_detail():
             }
         })
 
-    return render_template('persons.html',
-                collection_id=collection.id,
-                person_list=persons,
-                url_dict=photo_url_dict,
-                cropped_face_image_dict=cropped_face_image_dict,
-                boundingbox_dict=boundingbox_dict,
-                all_persons_list=all_persons_list,
-                data_personids_string=data_personids_string
-            )
+    return (collection.id,
+            persons,
+            photo_url_dict,
+            cropped_face_image_dict,
+            boundingbox_dict,
+            all_persons_list,
+            data_personids_string)
 
 
 @app.route('/photos/<int:photo_id>')
@@ -399,7 +418,29 @@ def edit_name():
 
 @app.route('/p/<string:sharable_uuid>')
 def show_collection_by_uuid(sharable_uuid):
-    return redirect('/')
+    person_ids_tuples_list = db.session.query(Person.id).join(UniqueidPerson ,UniqueId).filter(UniqueId.uuid == sharable_uuid).all()
+    person_ids = []
+    for person_id_tuple in person_ids_tuples_list:
+        person_ids.append(person_id_tuple[0])
+
+    (collection_id,
+    persons,
+    photo_url_dict,
+    cropped_face_image_dict,
+    boundingbox_dict,
+    all_persons_list,
+    data_personids_string) = person_detail_render_info(person_ids)
+
+    return render_template('persons.html',
+                collection_id=collection_id,
+                person_list=persons,
+                url_dict=photo_url_dict,
+                cropped_face_image_dict=cropped_face_image_dict,
+                boundingbox_dict=boundingbox_dict,
+                all_persons_list=all_persons_list,
+                data_personids_string=data_personids_string,
+                is_from_sharable_link=True
+            )
 
 
 @app.route('/share_photos', methods=['POST'])

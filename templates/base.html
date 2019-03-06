@@ -10,12 +10,14 @@
   <body>
     <h3><a href="/">Foto</a></h3>
     <hr>
-    <div class="collections-menu">
-      <a href="" class="collections-menu__header">Collections</a>
-      <ul class="collections-menu__collections">
-      </ul>
-    </div>
-    <hr>
+    {% block collections_dropdown_menu %}
+      <div class="collections-menu">
+        <a href="" class="collections-menu__header">Collections</a>
+        <ul class="collections-menu__collections">
+        </ul>
+      </div>
+      <hr>
+    {% endblock %}
     {% macro filterpersonsbar(persons, chosen_persons, cropped_faces_dict) -%}
       <div class="filter-bar-container">
         <ul class="filter-bar">

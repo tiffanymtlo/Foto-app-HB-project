@@ -7,8 +7,15 @@
   <link rel="stylesheet" href="/static/css/get-sharable-link.css" />
 {% endblock %}
 
+{% if not is_from_sharable_link %}
+  {% block collections_dropdown_menu %}
+  {% endblock %}
+{% endif %}
+
 {% block content %}
-  {{ filterpersonsbar(all_persons_list, person_list, cropped_face_image_dict) }}
+  {% if not is_from_sharable_link %}
+    {{ filterpersonsbar(all_persons_list, person_list, cropped_face_image_dict) }}
+  {% endif %}
   <div>
     <h1>
       {% for person in person_list %}
@@ -24,13 +31,21 @@
         {% endif %}
       {% endfor %}
       in
-      <a href="/collections/{{ collection_id }}">
-        Collection {{ collection_id }}
-      </a>
+      {% if not is_from_sharable_link %}
+        <a href="/collections/{{ collection_id }}">
+          Collection {{ collection_id }}
+        </a>
+      {% else %}
+        <span>
+          the collection
+        </span>
+      {% endif %}
     </h1>
-    <button class="share-btn" type="button" data-person-ids="{{ data_personids_string }}">Get sharable link</button>
-    <br />
-    <br />
+    {% if not is_from_sharable_link %}
+      <button class="share-btn" type="button" data-person-ids="{{ data_personids_string }}">Get sharable link</button>
+      <br />
+      <br />
+    {% endif %}
     {% if url_dict %}
       <div>
         {% for person in person_list %}
