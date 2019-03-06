@@ -72,6 +72,7 @@ class Person(db.Model):
 
     collection = db.relationship('Collection', backref='persons')
     person_photo = db.relationship('PersonPhoto', backref='person')
+    uniqueids_persons = db.relationship('UniqueidPerson', backref='person')
 
     def __repr__(self):
         return f"""<Person id={self.id}, name={self.name}, collection_id={self.collection_id}>"""
@@ -93,6 +94,34 @@ class PersonPhoto(db.Model):
 
     def __repr__(self):
         return f"""<PersonPhoto id={self.id}, person_id={self.person_id}, photo_id={self.photo_id}, face_width_percentage={self.face_width_percentage}, face_height_percentage={self.face_height_percentage}, face_top_percentage={self.face_top_percentage}, face_left_percentage={self.face_left_percentage}>"""
+
+
+class UniqueId(db.Model):
+    """ Unique links table """
+
+    __tablename__ = 'uniqueids'
+
+    id = db.Column(db.Integer, autoincrement=True, primary_key = True)
+    uuid = db.Column(db.String(200), nullable=False)
+
+    persons = db.relationship('Person', secondary='uniqueids_persons', backref='uuids')
+    uniqueids_persons = db.relationship('UniqueidPerson', backref='uuid')
+
+    def __repr__(self):
+        return f"""<UniqueID id={self.id}, uuid={self.uuid}>"""
+
+
+class UniqueidPerson(db.Model):
+        """ Composite table between UniqueId and Person tables """
+
+        __tablename__ = 'uniqueids_persons'
+
+        id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+        uuid_id = db.Column(db.Integer, db.ForeignKey('uniqueids.id'), nullable=False)
+        person_id = db.Column(db.Integer, db.ForeignKey('persons.id'), nullable=False)
+
+        def __repr__(self):
+            return f"""<UniqueidPerson id={self.id}, uuid_id={self.uuid_id}, person_id={self.person_id}>"""
 
 
 ##############################################################################

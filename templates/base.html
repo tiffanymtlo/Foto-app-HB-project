@@ -1,6 +1,6 @@
 <!DOCTYPE html>
   <head>
-    <title>Photoring</title>
+    <title>Foto</title>
     <link rel="stylesheet" href="/static/css/base.css">
     <link rel="stylesheet" href="/static/css/dropdown-menu.css">
     {% block page_specific_style %}
@@ -8,7 +8,7 @@
   </head>
 
   <body>
-    <h3><a href="/">Photoring</a></h3>
+    <h3><a href="/">Foto</a></h3>
     <hr>
     <div class="collections-menu">
       <a href="" class="collections-menu__header">Collections</a>
@@ -55,6 +55,9 @@
       {% else %}
         <a href="/login"><button class="login-btn" type="button">Login</button></a>
       {% endif %}
+    {% endblock %}
+
+    {% block unique_link_box %}
     {% endblock %}
 
     <hr>

@@ -4,6 +4,7 @@
   <link rel="stylesheet" href="/static/css/photo-tag.css" />
   <link rel="stylesheet" href="/static/css/filter-persons-bar.css" />
   <link rel="stylesheet" href="/static/css/face-thumbnail-tag.css" />
+  <link rel="stylesheet" href="/static/css/get-sharable-link.css" />
 {% endblock %}
 
 {% block content %}
@@ -27,6 +28,7 @@
         Collection {{ collection_id }}
       </a>
     </h1>
+    <button class="share-btn" type="button" data-person-ids="{{ data_personids_string }}">Get sharable link</button>
     <br />
     <br />
     {% if url_dict %}
@@ -67,7 +69,20 @@
   </div>
 {% endblock %}
 
+{% block unique_link_box %}
+  <div class="sharable-link__background-drop">
+    <div class="sharable-link__box-container">
+      <p class="sharable-link__description">
+        Copy the link below to share with your friends:
+      </p>
+      <input type="text" class="sharable-link__textbox" value="">
+      <button class="sharable-link__close-btn" type="button">Done</button>
+    </div>
+  </div>
+{% endblock %}
+
 {% block page_specific_scripts %}
   <script src="/static/js/photo-tag.js"></script>
   <script src="/static/js/filter-persons-bar.js"></script>
+  <script src="/static/js/get-sharable-link.js"></script>
 {% endblock %}

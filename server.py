@@ -2,7 +2,7 @@
 
 from jinja2 import StrictUndefined
 from flask import (Flask, render_template, redirect, request, flash, session, jsonify)
-from model import connect_to_db, db, User, Collection, Photo, Person, PersonPhoto
+from model import connect_to_db, db, User, Collection, Photo, Person, PersonPhoto, UniqueId, UniqueidPerson
 from helper import (
 upload_file_to_s3,
 get_photo_bytestring_from_s3,
@@ -282,6 +282,11 @@ def person_detail():
     person_ids = request.args.getlist('person_ids[]')
     persons = Person.query.filter(Person.id.in_(person_ids)).all()
 
+    data_personids = []
+    for person in persons:
+        data_personids.append(person.id)
+    data_personids_string = '&'.join(str(id) for id in data_personids)
+
     unique_photo_set = None
     for person in persons:
         if not unique_photo_set:
@@ -331,7 +336,8 @@ def person_detail():
                 url_dict=photo_url_dict,
                 cropped_face_image_dict=cropped_face_image_dict,
                 boundingbox_dict=boundingbox_dict,
-                all_persons_list=all_persons_list
+                all_persons_list=all_persons_list,
+                data_personids_string=data_personids_string
             )
 
 
@@ -391,9 +397,41 @@ def edit_name():
         return 'False'
 
 
-@app.route('/c/<string:collection_uuid>')
-def show_collection_by_uuid(collection_uuid):
+@app.route('/p/<string:sharable_uuid>')
+def show_collection_by_uuid(sharable_uuid):
     return redirect('/')
+
+
+@app.route('/share_photos', methods=['POST'])
+def share_photos():
+    """ Update database with unique links information """
+
+    ids = request.form.getlist('person_ids[]')
+    persons_list = Person.query.filter(Person.id.in_(ids)).all()
+
+    all_unique_links = db.session.query(
+        UniqueId
+    ).join(
+        UniqueidPerson
+    ).filter(
+        UniqueidPerson.person_id.in_(ids)
+    ).all()
+
+    for unique_link in all_unique_links:
+        if unique_link.persons == persons_list:
+            return unique_link.uuid
+
+    uuid_string = str(uuid.uuid4())
+    uniqueid = UniqueId(uuid=uuid_string)
+    for id in ids:
+        person = Person.query.get(id)
+        uniqueid.persons.append(person)
+    db.session.add(uniqueid)
+    db.session.commit()
+
+    return uuid_string
+
+
 
 
 if __name__ == '__main__':

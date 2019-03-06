@@ -1,0 +1,40 @@
+.sharable-link__box-container {
+  border: 1px solid rgb(105, 105, 105);
+  border-radius: 8px;
+  background: white;
+  opacity: 5;
+  z-index: 3;
+  padding: 20px 30px;
+  display: none;
+  position: absolute;
+}
+
+.sharable-link__background-drop {
+  display: none;
+  justify-content: space-evenly;
+  align-items: center;
+  z-index: 2;
+  background: rgba(169, 169, 169, 0.8);
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  top: -19px;
+  left: 0;
+}
+
+body {
+  position: relative;
+}
+
+.sharable-link__close-btn {
+  margin: 20px 0;
+  display: block;
+}
+
+.sharable-link__textbox {
+  width: 100%;
+}
+
+.sharable-link__description {
+  margin: 20px 0;
+}
