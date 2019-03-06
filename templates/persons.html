@@ -7,10 +7,12 @@
   <link rel="stylesheet" href="/static/css/get-sharable-link.css" />
 {% endblock %}
 
-{% if not is_from_sharable_link %}
-  {% block collections_dropdown_menu %}
-  {% endblock %}
-{% endif %}
+
+{% block collections_dropdown_menu %}
+  {% if not is_from_sharable_link %}
+    {{ super() }}
+  {% endif %}
+{% endblock %}
 
 {% block content %}
   {% if not is_from_sharable_link %}
@@ -20,7 +22,11 @@
     <h1>
       {% for person in person_list %}
         <a
-          title="Person {{ person.id }}"
+          {% if person.name %}
+            title="{{ person.name }}"
+          {% else %}
+            title="Person {{ person.id }}"
+          {% endif %}
           class="thumbnail-anchor"
           href="/persons?person_ids[]={{ person.id }}"
         >
@@ -42,14 +48,18 @@
       {% endif %}
     </h1>
     {% if not is_from_sharable_link %}
-      <button class="share-btn" type="button" data-person-ids="{{ data_personids_string }}">Get sharable link</button>
+      <button class="share-btn" type="button" data-person-ids="{{ data_personids_string }}">Get customized persons shareable link</button>
       <br />
       <br />
     {% endif %}
     {% if url_dict %}
       <div>
         {% for person in person_list %}
-          Person {{ person.id }}
+          {% if person.name %}
+            {{ person.name }},
+          {% else %}
+            Person {{ person.id }},
+          {% endif %}
         {% endfor %}
         is(are) found in these photos:
       </div>
@@ -82,6 +92,12 @@
       <div>Oops..The chosen people did not have any photos taken together...</div>
     {% endif %}
   </div>
+{% endblock %}
+
+{% block login_logout_button %}
+  {% if not is_from_sharable_link %}
+    {{ super() }}
+  {% endif %}
 {% endblock %}
 
 {% block unique_link_box %}

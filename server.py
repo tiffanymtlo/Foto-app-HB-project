@@ -245,6 +245,56 @@ def process_faces(collection_id):
 @app.route('/collections/<int:collection_id>')
 def show_collections(collection_id):
     """ Show the people list and photo list of that collection """
+
+    if 'username' not in session:
+        flash('Please log in to view collection.')
+        return redirect('/login')
+
+    collection = Collection.query.get(collection_id)
+    if collection.user.username != session['username']:
+        flash('You can only view collections that you own.')
+        flash('Please log out this account and log into the correct account to view this collection.')
+        return redirect('/permission_denied')
+
+    # photo_list = Photo.query.filter(Photo.collection_id == collection_id).all()
+    # person_list = Person.query.filter(Person.collection_id == collection_id).all()
+    #
+    # cropped_face_images_dict = make_cropped_face_images_dict(person_list)
+    # url_dict = make_photos_urls_dict(photo_list)
+    #
+    # # Create face bounding boxes for each indexed face
+    # boundingbox_dict = {}
+    # for photo in photo_list:
+    #     boundingbox_list = []
+    #     for person in photo.persons:
+    #         person_photo = PersonPhoto.query.filter(PersonPhoto.person == person, PersonPhoto.photo == photo).first()
+    #         boundingbox_list.append({
+    #             'person_photo_id': person_photo.id,
+    #             'face_top_percentage': person_photo.face_top_percentage,
+    #             'face_left_percentage': person_photo.face_left_percentage,
+    #             'face_width_percentage': person_photo.face_width_percentage,
+    #             'face_height_percentage': person_photo.face_height_percentage,
+    #         })
+    #     boundingbox_dict[photo.id] = boundingbox_list
+    (collection_id,
+    photo_list,
+    url_dict,
+    person_list,
+    cropped_face_images_dict,
+    boundingbox_dict) = collection_render_info(collection_id)
+
+    return render_template('collections.html',
+                collection_id=collection_id,
+                photos=photo_list,
+                url_dict=url_dict,
+                persons=person_list,
+                cropped_faces_dict=cropped_face_images_dict,
+                boundingbox_dict=boundingbox_dict,
+                is_from_sharable_link=False
+            )
+
+
+def collection_render_info(collection_id):
     photo_list = Photo.query.filter(Photo.collection_id == collection_id).all()
     person_list = Person.query.filter(Person.collection_id == collection_id).all()
 
@@ -266,20 +316,24 @@ def show_collections(collection_id):
             })
         boundingbox_dict[photo.id] = boundingbox_list
 
-    return render_template('collections.html',
-                collection_id=collection_id,
-                photos=photo_list,
-                url_dict=url_dict,
-                persons=person_list,
-                cropped_faces_dict=cropped_face_images_dict,
-                boundingbox_dict=boundingbox_dict
-            )
+    return (collection_id,
+            photo_list,
+            url_dict,
+            person_list,
+            cropped_face_images_dict,
+            boundingbox_dict)
 
 
 @app.route('/persons', methods=['GET'])
 def person_detail():
     """ Show the list of pictures that this person was in """
+
+    if 'username' not in session:
+        flash('Please log in to view this page.')
+        return redirect('/login')
+
     person_ids = request.args.getlist('person_ids[]')
+
     (collection_id,
     persons,
     photo_url_dict,
@@ -287,6 +341,13 @@ def person_detail():
     boundingbox_dict,
     all_persons_list,
     data_personids_string) = person_detail_render_info(person_ids)
+
+    collection_owner = Collection.query.get(collection_id).user.username
+
+    if collection_owner != session['username']:
+        flash('You can only view information about collections that you own.')
+        flash('Please log out this account and log into the correct account to view this page.')
+        return redirect('/permission_denied')
 
     return render_template('persons.html',
                 collection_id=collection_id,
@@ -302,6 +363,7 @@ def person_detail():
 
 def person_detail_render_info(person_ids):
     persons = Person.query.filter(Person.id.in_(person_ids)).all()
+    print(persons)
 
     data_personids = []
     for person in persons:
@@ -310,7 +372,7 @@ def person_detail_render_info(person_ids):
 
     unique_photo_set = None
     for person in persons:
-        if not unique_photo_set:
+        if unique_photo_set == None:
             unique_photo_set = set(person.photos)
         else:
             unique_photo_set = unique_photo_set.intersection(set(person.photos))
@@ -363,10 +425,22 @@ def person_detail_render_info(person_ids):
 @app.route('/photos/<int:photo_id>')
 def photo_detail(photo_id):
     """ Show the list of people who were in this picture """
+
+    if 'username' not in session:
+        flash('Please log in to view collection.')
+        return redirect('/login')
+
+
     photo = Photo.query.get(photo_id)
     persons = photo.persons
-
     collection = Collection.query.get(photo.collection_id)
+
+    if collection.user.username != session['username']:
+        flash('You can only view information about collections that you own.')
+        flash('Please log out this account and log into the correct account to view this page.')
+        return redirect('/permission_denied')
+
+
     all_persons_list = Person.query.filter(Person.collection == collection).all()
 
     # Generate a byte string for image
@@ -417,7 +491,7 @@ def edit_name():
 
 
 @app.route('/p/<string:sharable_uuid>')
-def show_collection_by_uuid(sharable_uuid):
+def show_persons_by_uuid(sharable_uuid):
     person_ids_tuples_list = db.session.query(Person.id).join(UniqueidPerson ,UniqueId).filter(UniqueId.uuid == sharable_uuid).all()
     person_ids = []
     for person_id_tuple in person_ids_tuples_list:
@@ -443,8 +517,30 @@ def show_collection_by_uuid(sharable_uuid):
             )
 
 
-@app.route('/share_photos', methods=['POST'])
-def share_photos():
+@app.route('/c/<string:sharable_collection_uuid>')
+def show_collections_by_uuid(sharable_collection_uuid):
+    sharable_collection_id = Collection.query.filter(Collection.uuid == sharable_collection_uuid).first().id
+
+    (collection_id,
+    photo_list,
+    url_dict,
+    person_list,
+    cropped_face_images_dict,
+    boundingbox_dict) = collection_render_info(sharable_collection_id)
+
+    return render_template('collections.html',
+                collection_id=collection_id,
+                photos=photo_list,
+                url_dict=url_dict,
+                persons=person_list,
+                cropped_faces_dict=cropped_face_images_dict,
+                boundingbox_dict=boundingbox_dict,
+                is_from_sharable_link=True
+            )
+
+
+@app.route('/create_sharable_slug', methods=['POST'])
+def create_sharable_slug():
     """ Update database with unique links information """
 
     ids = request.form.getlist('person_ids[]')
@@ -472,6 +568,20 @@ def share_photos():
 
     return uuid_string
 
+
+@app.route('/create_sharable_slug_collection')
+def create_sharable_slug_collection():
+    """ Get collection's uuid """
+
+    collection_id = request.args.get('collection_id')
+    uuid_string = Collection.query.get(collection_id).uuid
+
+    return uuid_string
+
+
+@app.route('/permission_denied')
+def permission_denied():
+    return render_template('permission_denied.html')
 
 
 

@@ -5,12 +5,25 @@
   <link rel="stylesheet" href="/static/css/collections.css" />
   <link rel="stylesheet" href="/static/css/filter-persons-bar.css" />
   <link rel="stylesheet" href="/static/css/face-thumbnail-tag.css" />
+  <link rel="stylesheet" href="/static/css/get-sharable-link.css" />
+{% endblock %}
+
+{% block collections_dropdown_menu %}
+  {% if not is_from_sharable_link %}
+    {{ super() }}
+  {% endif %}
 {% endblock %}
 
 {% block content %}
-  {{ filterpersonsbar(persons, persons, cropped_faces_dict) }}
+  {% if not is_from_sharable_link %}
+    {{ filterpersonsbar(persons, persons, cropped_faces_dict) }}
+  {% endif %}
   <div>
     <h1>Collection {{ collection_id }}</h1>
+    {% if not is_from_sharable_link %}
+      <button class="share-btn" type="button" data-collection-id="{{ collection_id }}">Get collection shareable link</button>
+      <br />
+  {% endif %}
     <h4>Photos:</h4>
     <ul>
     {% for photo in photos %}
@@ -38,15 +51,34 @@
     <ul>
     {% for person in persons %}
       <li class="person">
-        <a class="thumbnail-anchor" href="/persons?person_ids[]={{ person.id }}" title="Person {{ person.id }}">
+        <a class="thumbnail-anchor" href="/persons?person_ids[]={{ person.id }}"
+        {% if person.name %}
+          title="{{ person.name }}"
+        {% else %}
+          title="Person {{ person.id }}"
+        {% endif %}
+        >
           <img class="face-thumbnail" src="{{ cropped_faces_dict[person.id] }}" />
         </a>
-        {% if person.name %}
-          <div class="person__name-container">
-            <div class="name-container__name">{{ person.name }}</div>
-          </div>
+
+        {% if not is_from_sharable_link %}
+          {% if person.name %}
+            <div class="person__name-container">
+              <div class="name-container__name">{{ person.name }}</div>
+            </div>
+          {% else %}
+            <input class="name-field" type="text" name="name" placeholder="Person {{ person.id }}" data-personid="{{ person.id }}" />
+          {% endif %}
         {% else %}
-          <input class="name-field" type="text" name="name" placeholder="Person {{ person.id }}" data-personid="{{ person.id }}" />
+          {% if person.name %}
+            <div class="person__name-container">
+              <div class="name-container__name">{{ person.name }}</div>
+            </div>
+          {% else %}
+            <div class="person__name-container">
+              <div class="name-container__name">Person {{ person.id }}</div>
+            </div>
+          {% endif %}
         {% endif %}
       </li>
     {% endfor %}
@@ -54,8 +86,27 @@
   </div>
 {% endblock %}
 
+{% block login_logout_button %}
+  {% if not is_from_sharable_link %}
+    {{ super() }}
+  {% endif %}
+{% endblock %}
+
+{% block unique_link_box %}
+  <div class="sharable-link__background-drop">
+    <div class="sharable-link__box-container">
+      <p class="sharable-link__description">
+        Copy the link below to share with your friends:
+      </p>
+      <input type="text" class="sharable-link__textbox" value="">
+      <button class="sharable-link__close-btn" type="button">Done</button>
+    </div>
+  </div>
+{% endblock %}
+
 {% block page_specific_scripts %}
   <script src="/static/js/photo-tag.js"></script>
   <script src="/static/js/filter-persons-bar.js"></script>
   <script src="/static/js/edit-names.js"></script>
+  <script src="/static/js/get-collection-sharable-link.js"></script>
 {% endblock %}
