@@ -78,7 +78,11 @@
                     data-left="{{ entry[person_id].face_left_percentage }}"
                     data-width="{{ entry[person_id].face_width_percentage }}"
                     data-height="{{ entry[person_id].face_height_percentage}}"
-                    title="Person {{ person_id }}"
+                    {% if entry[person_id].person_name %}
+                      title="{{ entry[person_id].person_name }}"
+                    {% else %}
+                      title="Person {{ person_id }}"
+                    {% endif %}
                   >
                   </div>
                 {% endfor %}

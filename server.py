@@ -387,6 +387,7 @@ def person_detail_render_info(person_ids):
     photo_data = db.session.query(
         Photo.id,
         Person.id,
+        Person.name,
         PersonPhoto.face_top_percentage,
         PersonPhoto.face_left_percentage,
         PersonPhoto.face_width_percentage,
@@ -400,12 +401,13 @@ def person_detail_render_info(person_ids):
     ).all()
 
     boundingbox_dict = {}
-    for photo_id, person_id, face_top, face_left, face_width, face_height in photo_data:
+    for photo_id, person_id, person_name, face_top, face_left, face_width, face_height in photo_data:
         if photo_id not in boundingbox_dict:
             boundingbox_dict[photo_id] = []
 
         boundingbox_dict[photo_id].append({
             person_id: {
+                'person_name': person_name,
                 'face_top_percentage': face_top,
                 'face_left_percentage': face_left,
                 'face_width_percentage': face_width,
