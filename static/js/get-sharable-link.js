@@ -22,4 +22,8 @@ $(function() {
   $('.sharable-link__close-btn').on('click', function() {
     $('.sharable-link__background-drop').css('display', 'none');
   });
+
+  $('.sharable-link__background-drop').on('click', function() {
+    $('.sharable-link__background-drop').css('display', 'none');
+  });
 });
