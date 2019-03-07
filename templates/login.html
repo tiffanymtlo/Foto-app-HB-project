@@ -1,25 +1,30 @@
 {% extends 'base.html' %}
 
 {% block page_specific_style %}
+  <link rel="stylesheet" href="/static/css/login.css">
 {% endblock %}
 
 {% block collections_dropdown_menu %}
 {% endblock %}
 
 {% block content %}
-  <h1 class="signin__header">Sign in below: </h1>
-  <form class="signin__form" action="/login/validate" method="GET">
-    <div class="form__username-container">
-      Username:
-      <input type="text" name="username" />
-    </div>
-    <div class="form__pwd-container">
-      Password:
-      <input type="password" name="password" />
-    </div>
-    <button class="form__sigin-btn" type="submit">Login</button>
-  </form>
-  <a href="/register"><button>New User</button></a>
+  <div class="col-4 offset-4 signin__container">
+    <h2 class="signin__header">Sign in below: </h2>
+    <p class="signin__caption">Start identifying photos with a free account</p>
+    <form class="signin__form" action="/login/validate" method="GET">
+      <div class="form-group form__username-container">
+        <label for="user-login__username">Username: </label>
+        <input class="form-control input-textbox" type="text" name="username" />
+      </div>
+      <div class="form-group form__pwd-container">
+        <label for="user-login__pwd">Password: </label>
+        <input class="input-textbox form-control input-textbox" type="password" name="password" />
+      </div>
+      <button class="form__sigin-btn" type="submit">Login</button>
+    </form>
+    <br />
+    <a class="form__register-link" href="/register">Not a member yet? Register </a>
+  </div>
 {% endblock %}
 
 {% block login_logout_button %}

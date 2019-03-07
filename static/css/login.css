@@ -1,0 +1,41 @@
+.content::before {
+  background-image: url("/static/images/polaroid_background.jpg");
+  opacity: 0.5;
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+.content__content {
+  margin-top: 80px;
+}
+
+.signin__container {
+  background-color: white;
+  border-radius: 10px;
+  width: 50%;
+  padding: 45px;
+}
+
+.input-textbox {
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  background: none;
+}
+
+.form__register-link {
+  font-size: 0.8em;
+}
+
+.form__sigin-btn {
+  border-radius: 5px;
+  background-color: #EB9B3E;
+  color: white;
+  border: 0;
+  padding: 5px 10px;
+  cursor: pointer;
+}

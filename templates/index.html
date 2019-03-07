@@ -4,17 +4,20 @@
 <link rel="stylesheet" href="/static/css/index.css" />
 {% endblock %}
 
+
 {% block content %}
 <div class="upload__container show">
     <h1 class="upload__header">Upload your photos</h1>
-    <form class="upload__form" action="/upload" method="POST" enctype="multipart/form-data">
+    <form class="upload__form form-group" action="/upload" method="POST" enctype="multipart/form-data">
+      <div class="form-group">
         <label class="upload_instructions" for="user_file">Please upload your photos to start recognizing!</label>
         <br />
         <br />
-        <input class="upload__field" type="file" name="user_file" accept=".png, .jpg, .jpeg" multiple required>
+        <input class="upload__field form-control-file" type="file" name="user_file" accept=".png, .jpg, .jpeg" multiple required>
         <br />
         <br />
         <button class="upload__btn" type="submit">Upload</button>
+      </div>
     </form>
 </div>
 <div class="upload__loader hide">

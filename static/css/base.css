@@ -2,10 +2,48 @@ html, body {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
+  height: 100%;
 }
 
 .face-thumbnail {
   width: 40px;
   height: 43px;
   border-radius: 20px;
+}
+
+.container-fluid {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.content {
+  flex: 1 1 auto;
+}
+
+.footer {
+  background-color: white;
+  flex-shrink: 0;
+  padding: 10px;
+}
+
+.content__flash-message {
+  background-color: rgba(215,234,213, 0.85);
+  border: 1px solid #5A7F89;
+  margin-top: 10px;
+  margin-left: 25px;
+  padding: 5px;
+  padding-left: 10px;
+  border-radius: 5px;
+  float: left;
+  color: #5A7F89;
+  display: table-cell;
+  vertical-align: middle;
+  width: 100%;
+}
+
+.content__flash-message-container {
+  display: table;
+  width: 70%;
 }

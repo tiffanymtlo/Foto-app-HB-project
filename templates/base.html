@@ -1,6 +1,7 @@
 <!DOCTYPE html>
   <head>
     <title>Foto</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="/static/css/base.css">
     <link rel="stylesheet" href="/static/css/dropdown-menu.css">
     {% block page_specific_style %}
@@ -8,66 +9,83 @@
   </head>
 
   <body>
-    <h3><a href="/">Foto</a></h3>
-    <hr>
-    {% block collections_dropdown_menu %}
-      <div class="collections-menu">
-        <a href="" class="collections-menu__header">Collections</a>
-        <ul class="collections-menu__collections">
-        </ul>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-12">
+          <nav class="navbar navbar-light bg-light">
+            <a class="navbar-brand" href="/">
+              <img src="/static/images/logo_cropped.png" width="30" height="30" class="d-inline-block align-top" alt="">
+              Foto
+            </a>
+          </nav>
+        </div>
       </div>
-      <hr>
-    {% endblock %}
-    {% macro filterpersonsbar(persons, chosen_persons, cropped_faces_dict) -%}
-      <div class="filter-bar-container">
-        <ul class="filter-bar">
-          {% for person in persons %}
-            <li class="filter-item">
-              <div class="filter-item__container" title="Person {{ person.id }}">
-                {% if person in chosen_persons %}
-                  <input class="filter-item__checkbox" type="checkbox" name="person_ids[]" value="{{ person.id }}" checked />
-                {% else %}
-                  <input class="filter-item__checkbox" type="checkbox" name="person_ids[]" value="{{ person.id }}" />
-                {% endif %}
-                <img class="face-thumbnail" src="{{ cropped_faces_dict[person.id] }}" />
-              </div>
-            </li>
-          {% endfor %}
-        </ul>
-        <a class="persons__link" href="#">
-          <button class="persons__link-btn" type="button">
-            Filter persons
-          </button>
-        </a>
+      {% block collections_dropdown_menu %}
+        <div class="collections-menu">
+          <a href="" class="collections-menu__header">Collections</a>
+          <ul class="collections-menu__collections">
+          </ul>
+        </div>
         <hr>
+      {% endblock %}
+      {% macro filterpersonsbar(persons, chosen_persons, cropped_faces_dict) -%}
+        <div class="filter-bar-container">
+          <ul class="filter-bar">
+            {% for person in persons %}
+              <li class="filter-item">
+                <div class="filter-item__container" title="Person {{ person.id }}">
+                  {% if person in chosen_persons %}
+                    <input class="filter-item__checkbox" type="checkbox" name="person_ids[]" value="{{ person.id }}" checked />
+                  {% else %}
+                    <input class="filter-item__checkbox" type="checkbox" name="person_ids[]" value="{{ person.id }}" />
+                  {% endif %}
+                  <img class="face-thumbnail" src="{{ cropped_faces_dict[person.id] }}" />
+                </div>
+              </li>
+            {% endfor %}
+          </ul>
+          <a class="persons__link" href="#">
+            <button class="persons__link-btn" type="button">
+              Filter persons
+            </button>
+          </a>
+          <hr>
+        </div>
+      {%- endmacro %}
+      <div class="row content">
+          {% for flash in get_flashed_messages() %}
+            <div class="col-10 content__flash-message-container"><div class="content__flash-message">{{ flash }}</div></div>
+          {% endfor %}
+
+          <div class="col-12 content__content">
+            {% block content %}
+            {% endblock %}
+
+            {% block login_logout_button %}
+              {% if 'username' in session %}
+                <a href="/logout"><button class="logout-btn" type="button">Logout</button></a>
+              {% else %}
+                <a href="/login"><button class="login-btn" type="button">Login</button></a>
+              {% endif %}
+            {% endblock %}
+
+            {% block unique_link_box %}
+            {% endblock %}
+          </div>
       </div>
-    {%- endmacro %}
-    <div>
-        {% for flash in get_flashed_messages() %}
-          <div>{{ flash }}</div>
-        {% endfor %}
 
-        {% block content %}
-        {% endblock %}
+      <div class="row footer">
+        <div class="col-12">
+          <footer>Made by Tiffany Lo</footer>
+        </div>
+      </div>
+
+      <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+      <script src="/static/js/dropdown-menu.js"></script>
+      {% block page_specific_scripts %}
+      {% endblock %}
     </div>
-
-    {% block login_logout_button %}
-      {% if 'username' in session %}
-        <a href="/logout"><button class="logout-btn" type="button">Logout</button></a>
-      {% else %}
-        <a href="/login"><button class="login-btn" type="button">Login</button></a>
-      {% endif %}
-    {% endblock %}
-
-    {% block unique_link_box %}
-    {% endblock %}
-
-    <hr>
-    <footer>Made by Tiffany Lo</footer>
-
-    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-    <script src="/static/js/dropdown-menu.js"></script>
-    {% block page_specific_scripts %}
-    {% endblock %}
   </body>
 </html>
