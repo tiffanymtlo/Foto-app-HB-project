@@ -28,6 +28,13 @@
                     </ul>
                   </div>
                 {% endblock %}
+                {% block login_logout_button %}
+                  {% if 'username' in session %}
+                    <a href="/logout"><button class="logout-btn" type="button">Logout</button></a>
+                  {% else %}
+                    <a href="/login"><button class="login-btn" type="button">Login</button></a>
+                  {% endif %}
+                {% endblock %}
               </div>
             {% endif %}
           </nav>
@@ -65,14 +72,6 @@
 
           <div class="col-12 content__content">
             {% block content %}
-            {% endblock %}
-
-            {% block login_logout_button %}
-              {% if 'username' in session %}
-                <a href="/logout"><button class="logout-btn" type="button">Logout</button></a>
-              {% else %}
-                <a href="/login"><button class="login-btn" type="button">Login</button></a>
-              {% endif %}
             {% endblock %}
 
             {% block unique_link_box %}

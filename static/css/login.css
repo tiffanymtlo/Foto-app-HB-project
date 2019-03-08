@@ -11,15 +11,12 @@
   z-index: -1;
 }
 
-.content__content {
-  margin-top: 80px;
-}
-
 .signin__container {
-  background-color: white;
+  background-color: #FFFFFE;
   border-radius: 10px;
-  width: 50%;
   padding: 45px;
+  margin: 63px auto;
+  max-height: 100%;
 }
 
 .input-textbox {
