@@ -1,5 +1,6 @@
 <!DOCTYPE html>
   <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Foto</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="/static/css/base.css">
@@ -12,22 +13,27 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-12">
-          <nav class="navbar navbar-light bg-light">
+          <nav class="navbar navbar-light justify-content-between foto-navbar">
             <a class="navbar-brand" href="/">
               <img src="/static/images/logo_cropped.png" width="30" height="30" class="d-inline-block align-top" alt="">
               Foto
             </a>
+            {% if 'username' in session %}
+              <div class="navbar__right-container">
+                <div class="navbar-text">Hi, {{ session['username'] }}</div>
+                {% block collections_dropdown_menu %}
+                  <div class="collections-menu">
+                    <a href="" class="collections-menu__header">My Collections</a>
+                    <ul class="collections-menu__collections">
+                    </ul>
+                  </div>
+                {% endblock %}
+              </div>
+            {% endif %}
           </nav>
         </div>
       </div>
-      {% block collections_dropdown_menu %}
-        <div class="collections-menu">
-          <a href="" class="collections-menu__header">Collections</a>
-          <ul class="collections-menu__collections">
-          </ul>
-        </div>
-        <hr>
-      {% endblock %}
+
       {% macro filterpersonsbar(persons, chosen_persons, cropped_faces_dict) -%}
         <div class="filter-bar-container">
           <ul class="filter-bar">

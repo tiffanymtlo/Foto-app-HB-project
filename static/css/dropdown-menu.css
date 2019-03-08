@@ -2,8 +2,8 @@
   box-sizing: border-box;
 }
 
-.collections-menu {
-  width: 220px;
+.navbar__right-container {
+  text-align: right;
 }
 
 .collections-menu a {

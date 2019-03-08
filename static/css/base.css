@@ -47,3 +47,21 @@ html, body {
   display: table;
   width: 70%;
 }
+
+.foto-navbar {
+  background-color: #FFFFFE;
+}
+
+.navbar-text {
+  font-size: 0.85em;
+  padding: 0;
+}
+
+.foto-btn {
+  border-radius: 5px;
+  background-color: #F19F4D;
+  color: white;
+  border: 0;
+  padding: 5px 10px;
+  cursor: pointer;
+}
