@@ -120,9 +120,30 @@ def logout():
 
 @app.route('/')
 def index():
+    if 'username' in session:
+        user = User.query.filter(User.username == session['username']).first()
+        collections = user.collections
+        collections_info_dict = {}
+        for collection in collections:
+            url_dict = make_photos_urls_dict(collection.photos)
+            cropped_face_images_dict = make_cropped_face_images_dict(collection.persons)
+            collections_info_dict[collection.id] = {
+                        'photos' : url_dict,
+                        'persons': cropped_face_images_dict,
+            }
+        return render_template('index.html',
+                        collections_info_dict=collections_info_dict
+            )
+    else:
+        flash('Please log in to view this page.')
+        return redirect('/login')
+
+
+@app.route('/new_collection')
+def new_collection():
     """ Show the area for uploading pictures """
     if 'username' in session:
-        return render_template('index.html')
+        return render_template('new_collection.html')
     else:
         flash('Please log in to start recognizing faces.')
         return redirect('/login')
@@ -138,7 +159,7 @@ def upload():
     # Check if there's a 'user_file' key
     if len(files) == 0:
         flash('No files were selected. Please select file(s) to upload.')
-        return redirect('/')
+        return redirect('/new_collection')
 
     # Create a new collection instance and commit to database
     uuid_string = str(uuid.uuid4())
@@ -151,7 +172,7 @@ def upload():
         upload_files(files, new_collection.id)
     except:
         flash('Failed to upload files. Please try again. ')
-        return redirect('/')
+        return redirect('/new_collection')
 
     # Faces indexing and matching
     if create_rekognition_collection(new_collection.id) == True:
@@ -162,7 +183,7 @@ def upload():
             process_faces(new_collection.id)
         except:
             flash('Failed to process files. Please try again. ')
-            return redirect('/')
+            return redirect('/new_collection')
 
     # Update the database with the time finish processing the collection
     new_collection.time_processed = datetime.utcnow()
@@ -256,26 +277,6 @@ def show_collections(collection_id):
         flash('Please log out this account and log into the correct account to view this collection.')
         return redirect('/permission_denied')
 
-    # photo_list = Photo.query.filter(Photo.collection_id == collection_id).all()
-    # person_list = Person.query.filter(Person.collection_id == collection_id).all()
-    #
-    # cropped_face_images_dict = make_cropped_face_images_dict(person_list)
-    # url_dict = make_photos_urls_dict(photo_list)
-    #
-    # # Create face bounding boxes for each indexed face
-    # boundingbox_dict = {}
-    # for photo in photo_list:
-    #     boundingbox_list = []
-    #     for person in photo.persons:
-    #         person_photo = PersonPhoto.query.filter(PersonPhoto.person == person, PersonPhoto.photo == photo).first()
-    #         boundingbox_list.append({
-    #             'person_photo_id': person_photo.id,
-    #             'face_top_percentage': person_photo.face_top_percentage,
-    #             'face_left_percentage': person_photo.face_left_percentage,
-    #             'face_width_percentage': person_photo.face_width_percentage,
-    #             'face_height_percentage': person_photo.face_height_percentage,
-    #         })
-    #     boundingbox_dict[photo.id] = boundingbox_list
     (collection_id,
     photo_list,
     url_dict,
@@ -363,7 +364,6 @@ def person_detail():
 
 def person_detail_render_info(person_ids):
     persons = Person.query.filter(Person.id.in_(person_ids)).all()
-    print(persons)
 
     data_personids = []
     for person in persons:
@@ -458,6 +458,29 @@ def photo_detail(photo_id):
                 person_photo_list=photo.person_photo,
                 all_persons_list=all_persons_list,
             )
+
+
+@app.route('/edit_persons_names/<int:collection_id>')
+def edit_persons_names(collection_id):
+    if 'username' not in session:
+        flash('Please log in to edit names in this collection.')
+        return redirect('/login')
+
+    collection = Collection.query.get(collection_id)
+    if collection.user.username != session['username']:
+        flash('You can only edit collections that you own.')
+        flash('Please log out this account and log into the correct account to edit this collection.')
+        return redirect('/permission_denied')
+
+    persons = collection.persons
+    cropped_face_images_dict = make_cropped_face_images_dict(persons)
+
+    return render_template('edit_persons_names.html',
+                        collection_id=collection_id,
+                        persons=persons,
+                        cropped_faces_dict=cropped_face_images_dict,
+            )
+
 
 
 @app.route('/collections')

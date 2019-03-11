@@ -1,42 +1,37 @@
 {% extends 'base.html' %}
 
 {% block page_specific_style %}
-<link rel="stylesheet" href="/static/css/index.css" />
+  <link rel="stylesheet" href="/static/css/index.css" />
 {% endblock %}
 
+{% block collections_dropdown_menu %}
+  {{ super() }}
+{% endblock %}
 
 {% block content %}
-<div class="col-8 offset-2 upload__container-box">
-  <div class="upload__container show">
-      <h1 class="upload__header">Upload your photos</h1>
-      <form class="upload__form form-group" action="/upload" method="POST" enctype="multipart/form-data">
-        <div class="form-group upload-form">
-          <label class="upload_instructions" for="user_file_description">Please upload your photos to start recognizing!</label>
-          <br />
-          <input class="upload__field form-control-file" id="user_file" type="file" name="user_file" accept=".png, .jpg, .jpeg" data-multiple-caption="{count} files selected" multiple required>
-          <label for="user_file">
-            <figure>
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17">
-                <path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"/>
-              </svg>
-            </figure>
-            <span>Choose a file...</span>
-          </label>
-          <br />
-          <br />
-          <button class="upload__btn foto-btn" type="submit">Upload</button>
-        </div>
-      </form>
-  </div>
-  <div class="upload__loader hide">
-    <img class="loader__gif" src="/static/images/fancy_pants.gif" alt="preloader" />
-    <br />
-    loading...
-  </div>
-</div>
-{% endblock %}
-
-{% block page_specific_scripts %}
-<script src="/static/js/index.js"></script>
-<script src="/static/js/upload-btn.js"></script>
+  <a href="/new_collection">Create a new collection</a>
+  {% if collections_info_dict %}
+    <h1>Your collections</h1>
+    <ul>
+      {% for collection in collections_info_dict %}
+        <li class="collection-detail">
+          <a href="/collections/{{ collection }}" class="collection_detail__anchor">
+            <p class="collection-detail__title">Collection {{ collection }}</p>
+            <div class="collection-detail__photos">
+              {% for photo_id in collections_info_dict[collection]['photos'] %}
+                <img class="photo_thumbnail" src="{{ collections_info_dict[collection]['photos'][photo_id] }}">
+              {% endfor %}
+            </div>
+            <div class="collection-detail__persons">
+              {% for person_id in collections_info_dict[collection]['persons'] %}
+                <img class="face-thumbnail" src="{{ collections_info_dict[collection]['persons'][person_id] }}" />
+              {% endfor %}
+            </div>
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <h2>You don't have any photo collections</h2>
+  {% endif %}
 {% endblock %}

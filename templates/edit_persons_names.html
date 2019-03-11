@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block page_specific_style %}
+  <link rel="stylesheet" href="/static/css/face-thumbnail-tag.css" />
+  <link rel="stylesheet" href="/static/css/edit-names.css" />
+{% endblock %}
+
+{% block collections_dropdown_menu %}
+  {{ super() }}
+{% endblock %}
+
+{% block content %}
+  <a href="/collections/{{ collection_id }}">Back to collection</a>
+  <h3>Persons in Collection {{ collection_id }}</h3>
+  <ul>
+  {% for person in persons %}
+    <li class="person">
+      <img class="face-thumbnail" src="{{ cropped_faces_dict[person.id] }}" />
+      {% if person.name %}
+        <div class="person__name-container">
+          <div class="name-container__name">{{ person.name }}</div>
+        </div>
+      {% else %}
+        <input class="name-field" type="text" name="name" placeholder="Person {{ person.id }}" data-personid="{{ person.id }}" />
+      {% endif %}
+    </li>
+  {% endfor %}
+  </ul>
+{% endblock %}
+
+{% block page_specific_scripts %}
+  <script src="/static/js/edit-names.js"></script>
+{% endblock %}

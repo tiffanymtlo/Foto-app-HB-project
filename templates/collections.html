@@ -1,11 +1,13 @@
 {% extends 'base.html' %}
 
 {% block page_specific_style %}
+  <link rel="stylesheet" href="/static/css/shared.css" />
   <link rel="stylesheet" href="/static/css/photo-tag.css" />
-  <link rel="stylesheet" href="/static/css/collections.css" />
+  <link rel="stylesheet" href="/static/css/edit-names.css" />
   <link rel="stylesheet" href="/static/css/filter-persons-bar.css" />
   <link rel="stylesheet" href="/static/css/face-thumbnail-tag.css" />
   <link rel="stylesheet" href="/static/css/get-sharable-link.css" />
+  <link rel="stylesheet" href="/static/css/shared.css" />
 {% endblock %}
 
 {% block collections_dropdown_menu %}
@@ -17,17 +19,20 @@
 {% block content %}
   {% if not is_from_sharable_link %}
     {{ filterpersonsbar(persons, persons, cropped_faces_dict) }}
+    <a href="/">All collections</a>
   {% endif %}
-  <div>
+  <div class="col-10 offset-1 collection__content">
     <h1>Collection {{ collection_id }}</h1>
     {% if not is_from_sharable_link %}
-      <button class="share-btn" type="button" data-collection-id="{{ collection_id }}">Get collection shareable link</button>
+      <button class="share-btn foto-btn" type="button" data-collection-id="{{ collection_id }}">Get collection shareable link</button>
       <br />
-  {% endif %}
+      <a href="/edit_persons_names/{{ collection_id }}"><button class="edit-names-btn foto-btn" type="button">Edit names for collection</button></a>
+      <br />
+    {% endif %}
     <h4>Photos:</h4>
-    <ul>
+    <div class="grid">
     {% for photo in photos %}
-      <li>
+      <div class="grid-item">
         <a class="photo-container" href="/photos/{{ photo.id }}" title="Photo{{ photo.id }}" style="width:300px">
           <img class="photo" src="{{ url_dict[photo.id] }}" />
           {% if photo.id in boundingbox_dict %}
@@ -43,9 +48,9 @@
             {% endfor %}
           {% endif %}
         </a>
-      </li>
+      </div>
     {% endfor %}
-    </ul>
+  </div>
 
     <h4>Persons:</h4>
     <ul>
@@ -105,8 +110,10 @@
 {% endblock %}
 
 {% block page_specific_scripts %}
+  <script src="/static/js/masonry.pkgd.min.js"></script>
   <script src="/static/js/photo-tag.js"></script>
   <script src="/static/js/filter-persons-bar.js"></script>
   <script src="/static/js/edit-names.js"></script>
   <script src="/static/js/get-collection-sharable-link.js"></script>
+  <script src="/static/js/collections.js"></script>
 {% endblock %}

@@ -10,39 +10,43 @@
   </head>
 
   <body>
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-12">
-          <nav class="navbar navbar-light justify-content-between foto-navbar">
+    <!-- <div class="container-fluid"> -->
+      <!-- <div class="row"> -->
+        <!-- <div class="col-12"> -->
+          <nav class="navbar navbar-light justify-content-between foto-navbar fixed-top">
             <a class="navbar-brand" href="/">
-              <img src="/static/images/logo_cropped.png" width="30" height="30" class="d-inline-block align-top" alt="">
+              <img src="/static/images/logo_cropped.png" width="30" height="30" class="d-inline-block align-top">
               Foto
             </a>
             {% if 'username' in session %}
               <div class="navbar__right-container">
-                <div class="navbar-text">Hi, {{ session['username'] }}</div>
-                {% block collections_dropdown_menu %}
-                  <div class="collections-menu">
-                    <a href="" class="collections-menu__header">My Collections</a>
-                    <ul class="collections-menu__collections">
-                    </ul>
-                  </div>
-                {% endblock %}
-                {% block login_logout_button %}
-                  {% if 'username' in session %}
-                    <a href="/logout"><button class="logout-btn" type="button">Logout</button></a>
-                  {% else %}
-                    <a href="/login"><button class="login-btn" type="button">Login</button></a>
-                  {% endif %}
-                {% endblock %}
+                <div class="navbar-text navbar__right-top-btn">
+                  Hi, {{ session['username'] }}
+                  <a href="/new_collection">Create a new collection</a>
+                  {% block collections_dropdown_menu %}
+                    <div class="collections-menu">
+                      <a href="/" class="collections-menu__header">My Collections</a>
+                      <ul class="collections-menu__collections">
+                      </ul>
+                    </div>
+                  {% endblock %}
+                  {% block login_logout_button %}
+                    {% if 'username' in session %}
+                      <a href="/logout"><button class="logout-btn" type="button">Logout</button></a>
+                    {% else %}
+                      <a href="/login"><button class="login-btn" type="button">Login</button></a>
+                    {% endif %}
+                  {% endblock %}
+                </div>
+
               </div>
             {% endif %}
           </nav>
-        </div>
-      </div>
+        <!-- </div> -->
+      <!-- </div> -->
 
       {% macro filterpersonsbar(persons, chosen_persons, cropped_faces_dict) -%}
-        <div class="filter-bar-container">
+        <div class="col-3 filter-bar-container">
           <ul class="filter-bar">
             {% for person in persons %}
               <li class="filter-item">
@@ -62,28 +66,29 @@
               Filter persons
             </button>
           </a>
-          <hr>
         </div>
       {%- endmacro %}
-      <div class="row content">
-          {% for flash in get_flashed_messages() %}
-            <div class="col-10 content__flash-message-container"><div class="content__flash-message">{{ flash }}</div></div>
-          {% endfor %}
+      <div class="container-fluid">
+        <div class="row content">
+            {% for flash in get_flashed_messages() %}
+              <div class="col-10 content__flash-message-container"><div class="content__flash-message">{{ flash }}</div></div>
+            {% endfor %}
 
-          <div class="col-12 content__content">
-            {% block content %}
-            {% endblock %}
+            <div class="col-12 content__content">
+              {% block content %}
+              {% endblock %}
 
-            {% block unique_link_box %}
-            {% endblock %}
-          </div>
-      </div>
-
-      <div class="row footer">
-        <div class="col-12">
-          <footer>Made by Tiffany Lo</footer>
+              {% block unique_link_box %}
+              {% endblock %}
+            </div>
         </div>
       </div>
+<!--
+      <div class="row footer">
+        <div class="col-12"> -->
+      <footer class="footer">Made by Tiffany Lo</footer>
+        <!-- </div>
+      </div> -->
 
       <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>

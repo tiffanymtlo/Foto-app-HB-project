@@ -1,6 +1,11 @@
+body {
+  overflow: hidden;
+}
+
 .content::before {
   background-image: url("/static/images/polaroid_background.jpg");
-  background-size: cover;
+  background-position: center top;
+  background-size: 100% auto;
   opacity: 0.5;
   content: "";
   position: absolute;
