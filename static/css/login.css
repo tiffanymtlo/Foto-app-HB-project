@@ -2,7 +2,7 @@ body {
   overflow: hidden;
 }
 
-.content__content {
+.content {
   background: none;
 }
 
@@ -24,7 +24,7 @@ body {
   background-color: #FFFFFE;
   border-radius: 10px;
   padding: 45px;
-  margin: 63px auto;
+  margin: 40px auto;
   max-height: 100%;
 }
 

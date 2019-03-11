@@ -8,3 +8,7 @@ li.filter-item {
   width: 65px;
   display: inline-block;
 }
+
+.persons__link {
+  float: right;
+}

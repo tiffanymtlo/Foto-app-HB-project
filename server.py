@@ -25,14 +25,6 @@ from secret import bucket, APP_SECRET_KEY
 from flask_debugtoolbar import DebugToolbarExtension
 
 
-
-# ******DELETE THE LINE BELOW WHEN YOU ARE DONE*****
-from helper import list_rekognition_collections, delete_rek_collection
-
-""" SOMETHING TO CHANGE LATER!!!
-"""
-
-
 app = Flask(__name__)
 
 # Required to use Flask sessions and the debug toolbar
@@ -59,9 +51,9 @@ def validate_login():
         flash('Welcome back, {}. You are successfully logged in.'.format(user.username))
         session['username'] = user.username
         return redirect('/')
-    else:
-        flash('Incorrect username or password.')
-        return redirect('/login')
+
+    flash('Incorrect username or password.')
+    return redirect('/login')
 
 
 @app.route('/register')

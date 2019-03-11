@@ -3,17 +3,10 @@ import base64
 from PIL import Image, ImageDraw
 import io
 from secret import bucket
-####### Delete pprint after the project is done
-import pprint
-# for print pretty on API response objects
-pp = pprint.PrettyPrinter(indent=4)
 
 # Using s3 and rekognition
 s3 = boto3.client('s3')
 rekognition = boto3.client('rekognition')
-
-
-""" SOMETHING TO CHANGE LATER!!!"""
 
 
 # Upload files to Amazon S3
