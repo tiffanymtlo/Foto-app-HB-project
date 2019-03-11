@@ -1,12 +1,11 @@
 .all_collections_anchor {
-  padding: 30px;
-  border: 1px solid red;
+  padding: 10px 30px 20px 30px;
   display: block;
 }
 
 .collection__content {
-  border: 1px solid red;
   padding: 0 20px;
+  margin: 0 auto;
 }
 
 .collection__content__title {
@@ -35,4 +34,54 @@
 .collection__content__persons-list > li.content__person-item {
   display: inline-block;
   padding: 0 5px;
+}
+
+.faces-container__face-thumbnail {
+  width: 35px;
+  height: 35px;
+  border-radius: 17.5px;
+  background: #fff;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.6);
+  margin: 0 3px 0 0;
+}
+
+/* .faces-container__thumbnail-anchor {
+  width: 35px;
+  height: 35px;
+  text-decoration: none;
+  color: #fff;
+} */
+
+.grid-item {
+  margin-bottom: 15px;
+  padding:10px;
+}
+
+.photo-container {
+  width: 300px;
+}
+
+.photo {
+  width: 100%;
+  margin-bottom: 15px;
+  border: 1px solid transparent;
+  transition: all 0.3s ease-in;
+  border-radius: 5px;
+}
+
+.grid-item:hover {
+  border-color: #ddd;
+  background: #fff;
+  box-shadow: 1px 1px 9px rgba(0,0,0,0.2);
+  border-radius: 5px;
+}
+
+.grid-item:hover .faces-container {
+  opacity: 1;
+}
+
+.faces-container {
+  opacity: 0;
+  overflow: hidden;
+  transition: all 0.3s ease-in-out;
 }

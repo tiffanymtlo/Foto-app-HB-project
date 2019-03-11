@@ -42,7 +42,7 @@
     <div class="grid">
     {% for photo in photos %}
       <div class="grid-item">
-        <a class="photo-container" href="/photos/{{ photo.id }}" title="Photo{{ photo.id }}" style="width:300px">
+        <a class="photo-container" href="/photos/{{ photo.id }}" title="Photo{{ photo.id }}">
           <img class="photo" src="{{ url_dict[photo.id] }}" />
           {% if photo.id in boundingbox_dict %}
             {% for person_box in boundingbox_dict[photo.id] %}
@@ -56,6 +56,19 @@
               ></div>
             {% endfor %}
           {% endif %}
+          <div class="faces-container">
+            {% for person in photo.persons %}
+              <a class="faces-container__thumbnail-anchor" href="/persons?person_ids[]={{ person.id }}"
+              {% if person.name %}
+                title="{{ person.name }}"
+              {% else %}
+                title="Person {{ person.id }}"
+              {% endif %}
+              >
+                <img class="faces-container__face-thumbnail" src="{{ cropped_faces_dict[person.id] }}" />
+              </a>
+            {% endfor %}
+          </div>
         </a>
       </div>
     {% endfor %}
