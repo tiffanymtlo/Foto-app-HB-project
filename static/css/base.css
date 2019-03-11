@@ -26,6 +26,7 @@ html, body {
 .content__content {
   width: 100%;
   height: 100%;
+  background-color: #EFEFEF;
 }
 
 .footer {
@@ -55,6 +56,7 @@ html, body {
 .content__flash-message-container {
   display: table;
   position: absolute;
+  z-index: 2;
 }
 
 .foto-navbar {
@@ -82,4 +84,7 @@ html, body {
 
 .filter-bar-container {
   background-color: red;
+  position: absolute;
+  bottom: 0;
+  right: 0;
 }

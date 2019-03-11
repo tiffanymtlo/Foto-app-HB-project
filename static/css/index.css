@@ -1,3 +1,7 @@
 .photo_thumbnail {
   width: 100px;
 }
+
+.content__content {
+  background: none;
+}

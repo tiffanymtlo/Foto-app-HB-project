@@ -2,6 +2,10 @@ body {
   overflow: hidden;
 }
 
+.content__content {
+  background: none;
+}
+
 .content::before {
   background-image: url("/static/images/polaroid_background.jpg");
   background-position: center top;

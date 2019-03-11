@@ -29,10 +29,6 @@ body {
   display: none;
 }
 
-.content {
-  background-color: #EFEFEF;
-}
-
 .upload__container-box {
   background-color: #FFFFFE;
   border-radius: 10px;

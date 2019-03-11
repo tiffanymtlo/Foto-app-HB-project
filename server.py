@@ -4,19 +4,19 @@ from jinja2 import StrictUndefined
 from flask import (Flask, render_template, redirect, request, flash, session, jsonify)
 from model import connect_to_db, db, User, Collection, Photo, Person, PersonPhoto, UniqueId, UniqueidPerson
 from helper import (
-upload_file_to_s3,
-get_photo_bytestring_from_s3,
-convert_photo_byte_string_to_url,
-create_rekognition_collection,
-index_faces,
-delete_rekognition_collection,
-get_face_id_image_info_dict,
-search_faces,
-make_photos_urls_dict,
-make_cropped_face_images_dict,
-get_photo_width_height,
-make_cropped_face_image,
-get_bounding_box_info_from_dict
+    upload_file_to_s3,
+    get_photo_bytestring_from_s3,
+    convert_photo_byte_string_to_url,
+    create_rekognition_collection,
+    index_faces,
+    delete_rekognition_collection,
+    get_face_id_image_info_dict,
+    search_faces,
+    make_photos_urls_dict,
+    make_cropped_face_images_dict,
+    get_photo_width_height,
+    make_cropped_face_image,
+    get_bounding_box_info_from_dict
 )
 from werkzeug.utils import secure_filename
 from datetime import datetime
@@ -45,8 +45,8 @@ app.jinja_env.undefined = StrictUndefined
 def login():
     if 'username' in session:
         return redirect('/')
-    else:
-        return render_template('login.html')
+
+    return render_template('login.html')
 
 
 @app.route('/login/validate')
@@ -54,52 +54,46 @@ def validate_login():
     check_username = request.args.get('username')
     check_password = request.args.get('password')
 
-    user = User.query.filter(User.username == check_username).first()
+    user = User.query.filter(User.username == check_username, User.password == check_password).first()
     if user:
-        if user.password == check_password:
-            flash('Welcome back, {}. You are successfully logged in.'.format(user.username))
-            session['username'] = user.username
-            return redirect('/')
-        else:
-            flash('Your username and password did not match. Please try again.')
-            return redirect('/login')
+        flash('Welcome back, {}. You are successfully logged in.'.format(user.username))
+        session['username'] = user.username
+        return redirect('/')
     else:
-        flash('Looks like you are not registered. Please register to start facial recognizing your photos.')
-        return redirect('/register')
+        flash('Incorrect username or password.')
+        return redirect('/login')
 
 
 @app.route('/register')
 def register():
     if 'username' in session:
         return redirect('/')
-    else:
-        return render_template('register.html')
+
+    return render_template('register.html')
 
 
 @app.route('/register/new_user', methods=['POST'])
 def register_new_user():
-    new_username = request.form.get('username')
-    new_pwd = request.form.get('password')
-    new_confirm_pwd = request.form.get('confirm_password')
+    new_username = request.form.get('username', None)
+    new_pwd = request.form.get('password', None)
+    new_confirm_pwd = request.form.get('confirm_password', None)
 
-    if new_username == '':
+    if not new_username:
         flash('Please put in a username.')
         return redirect('/register')
-    elif new_pwd == '':
+    elif not new_pwd:
         flash('Please put in a password.')
         return redirect('/register')
-    elif new_confirm_pwd == '':
+    elif not new_confirm_pwd:
         flash('Please put in a confirm password.')
         return redirect('/register')
-
-    all_users = User.query.all()
-    for user in all_users:
-        if user.username == new_username:
-            flash('This username is already registered. Please register with another username or sign in.')
-            return redirect('/register')
-
-    if new_pwd != new_confirm_pwd:
+    elif new_confirm_pwd != new_pwd:
         flash('The two passwords did not match. Please try again.')
+        return redirect('/register')
+
+    existing_user = User.query.filter(User.username == new_username).first()
+    if existing_user is not None:
+        flash('This username is already registered. Please register with another username or sign in.')
         return redirect('/register')
 
     new_user = User(username=new_username, password=new_pwd)
@@ -131,12 +125,12 @@ def index():
                         'photos' : url_dict,
                         'persons': cropped_face_images_dict,
             }
-        return render_template('index.html',
-                        collections_info_dict=collections_info_dict
-            )
-    else:
-        flash('Please log in to view this page.')
-        return redirect('/login')
+        return render_template(
+            'index.html',
+            collections_info_dict=collections_info_dict
+        )
+
+    return redirect('/login')
 
 
 @app.route('/new_collection')
@@ -144,9 +138,9 @@ def new_collection():
     """ Show the area for uploading pictures """
     if 'username' in session:
         return render_template('new_collection.html')
-    else:
-        flash('Please log in to start recognizing faces.')
-        return redirect('/login')
+
+    flash('Please log in to start recognizing faces.')
+    return redirect('/login')
 
 
 @app.route('/upload', methods=['POST'])
@@ -238,13 +232,13 @@ def process_faces(collection_id):
                 photo_width = photo.width
                 photo_height = photo.height
                 image_bytes = make_cropped_face_image(
-                                photo_byte_string,
-                                photo_width,
-                                photo_height,
-                                face_width,
-                                face_height,
-                                face_top,
-                                face_left
+                    photo_byte_string,
+                    photo_width,
+                    photo_height,
+                    face_width,
+                    face_height,
+                    face_top,
+                    face_left
                 )
 
                 person_photo = PersonPhoto(
@@ -285,14 +279,14 @@ def show_collections(collection_id):
     boundingbox_dict) = collection_render_info(collection_id)
 
     return render_template('collections.html',
-                collection_id=collection_id,
-                photos=photo_list,
-                url_dict=url_dict,
-                persons=person_list,
-                cropped_faces_dict=cropped_face_images_dict,
-                boundingbox_dict=boundingbox_dict,
-                is_from_sharable_link=False
-            )
+        collection_id=collection_id,
+        photos=photo_list,
+        url_dict=url_dict,
+        persons=person_list,
+        cropped_faces_dict=cropped_face_images_dict,
+        boundingbox_dict=boundingbox_dict,
+        is_from_sharable_link=False
+    )
 
 
 def collection_render_info(collection_id):
@@ -350,16 +344,17 @@ def person_detail():
         flash('Please log out this account and log into the correct account to view this page.')
         return redirect('/permission_denied')
 
-    return render_template('persons.html',
-                collection_id=collection_id,
-                person_list=persons,
-                url_dict=photo_url_dict,
-                cropped_face_image_dict=cropped_face_image_dict,
-                boundingbox_dict=boundingbox_dict,
-                all_persons_list=all_persons_list,
-                data_personids_string=data_personids_string,
-                is_from_sharable_link=False
-            )
+    return render_template(
+        'persons.html',
+        collection_id=collection_id,
+        person_list=persons,
+        url_dict=photo_url_dict,
+        cropped_face_image_dict=cropped_face_image_dict,
+        boundingbox_dict=boundingbox_dict,
+        all_persons_list=all_persons_list,
+        data_personids_string=data_personids_string,
+        is_from_sharable_link=False
+    )
 
 
 def person_detail_render_info(person_ids):
@@ -432,32 +427,31 @@ def photo_detail(photo_id):
         flash('Please log in to view collection.')
         return redirect('/login')
 
-
     photo = Photo.query.get(photo_id)
-    persons = photo.persons
-    collection = Collection.query.get(photo.collection_id)
+    collection = photo.collection
 
     if collection.user.username != session['username']:
         flash('You can only view information about collections that you own.')
         flash('Please log out this account and log into the correct account to view this page.')
         return redirect('/permission_denied')
 
-
-    all_persons_list = Person.query.filter(Person.collection == collection).all()
+    persons = photo.persons
+    all_persons_list = collection.persons
 
     # Generate a byte string for image
     url = convert_photo_byte_string_to_url(photo.byte_string)
     cropped_face_images_dict = make_cropped_face_images_dict(all_persons_list)
 
-    return render_template('photos.html',
-                url=url,
-                collection_id=collection.id,
-                persons=persons,
-                photo=photo,
-                cropped_faces_dict=cropped_face_images_dict,
-                person_photo_list=photo.person_photo,
-                all_persons_list=all_persons_list,
-            )
+    return render_template(
+        'photos.html',
+        url=url,
+        collection_id=collection.id,
+        persons=persons,
+        photo=photo,
+        cropped_faces_dict=cropped_face_images_dict,
+        person_photo_list=photo.person_photo,
+        all_persons_list=all_persons_list,
+    )
 
 
 @app.route('/edit_persons_names/<int:collection_id>')
@@ -475,12 +469,12 @@ def edit_persons_names(collection_id):
     persons = collection.persons
     cropped_face_images_dict = make_cropped_face_images_dict(persons)
 
-    return render_template('edit_persons_names.html',
-                        collection_id=collection_id,
-                        persons=persons,
-                        cropped_faces_dict=cropped_face_images_dict,
-            )
-
+    return render_template(
+        'edit_persons_names.html',
+        collection_id=collection_id,
+        persons=persons,
+        cropped_faces_dict=cropped_face_images_dict,
+    )
 
 
 @app.route('/collections')
@@ -488,13 +482,12 @@ def get_all_collections():
     """Get json of available collections. """
     user = User.query.filter(User.username == session['username']).first()
     collections = Collection.query.filter(Collection.user == user, Collection.time_processed != None).all()
-    data = []
-    for collection in collections:
-        data.append({
-            'id': collection.id,
-            'numPhotos': len(collection.photos),
-            'numPersons': len(collection.persons),
-        })
+
+    data = [{
+        'id': collection.id,
+        'numPhotos': len(collection.photos),
+        'numPersons': len(collection.persons),
+    } for collection in collections]
 
     return jsonify(data)
 
@@ -502,25 +495,31 @@ def get_all_collections():
 @app.route('/edit_name', methods=['POST'])
 def edit_name():
     """ Update person's name in the database """
+
+    if 'username' not in session:
+        return 'False'
+
+    person_id = request.form['person_id']
+    person = Person.query.get(person_id)
+    collection = person.collection
+    username = collection.user.username
+
+    if username != session['username']:
+        return 'False'
+
     try:
-        person_id = request.form['person_id']
         name = request.form['name']
-        person = Person.query.get(person_id)
         person.name = name
         db.session.commit()
-
         return 'True'
-
     except:
         return 'False'
 
 
 @app.route('/p/<string:sharable_uuid>')
 def show_persons_by_uuid(sharable_uuid):
-    person_ids_tuples_list = db.session.query(Person.id).join(UniqueidPerson ,UniqueId).filter(UniqueId.uuid == sharable_uuid).all()
-    person_ids = []
-    for person_id_tuple in person_ids_tuples_list:
-        person_ids.append(person_id_tuple[0])
+    person_ids_tuples_list = db.session.query(Person.id).join(UniqueidPerson, UniqueId).filter(UniqueId.uuid == sharable_uuid).all()
+    person_ids = [person_id for (person_id) in person_ids_tuples_list]
 
     (collection_id,
     persons,
@@ -531,15 +530,15 @@ def show_persons_by_uuid(sharable_uuid):
     data_personids_string) = person_detail_render_info(person_ids)
 
     return render_template('persons.html',
-                collection_id=collection_id,
-                person_list=persons,
-                url_dict=photo_url_dict,
-                cropped_face_image_dict=cropped_face_image_dict,
-                boundingbox_dict=boundingbox_dict,
-                all_persons_list=all_persons_list,
-                data_personids_string=data_personids_string,
-                is_from_sharable_link=True
-            )
+        collection_id=collection_id,
+        person_list=persons,
+        url_dict=photo_url_dict,
+        cropped_face_image_dict=cropped_face_image_dict,
+        boundingbox_dict=boundingbox_dict,
+        all_persons_list=all_persons_list,
+        data_personids_string=data_personids_string,
+        is_from_sharable_link=True
+    )
 
 
 @app.route('/c/<string:sharable_collection_uuid>')
@@ -553,15 +552,16 @@ def show_collections_by_uuid(sharable_collection_uuid):
     cropped_face_images_dict,
     boundingbox_dict) = collection_render_info(sharable_collection_id)
 
-    return render_template('collections.html',
-                collection_id=collection_id,
-                photos=photo_list,
-                url_dict=url_dict,
-                persons=person_list,
-                cropped_faces_dict=cropped_face_images_dict,
-                boundingbox_dict=boundingbox_dict,
-                is_from_sharable_link=True
-            )
+    return render_template(
+        'collections.html',
+        collection_id=collection_id,
+        photos=photo_list,
+        url_dict=url_dict,
+        persons=person_list,
+        cropped_faces_dict=cropped_face_images_dict,
+        boundingbox_dict=boundingbox_dict,
+        is_from_sharable_link=True
+    )
 
 
 @app.route('/create_sharable_slug', methods=['POST'])
@@ -607,7 +607,6 @@ def create_sharable_slug_collection():
 @app.route('/permission_denied')
 def permission_denied():
     return render_template('permission_denied.html')
-
 
 
 if __name__ == '__main__':

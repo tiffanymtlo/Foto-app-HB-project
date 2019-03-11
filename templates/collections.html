@@ -1,13 +1,12 @@
 {% extends 'base.html' %}
 
 {% block page_specific_style %}
-  <link rel="stylesheet" href="/static/css/shared.css" />
   <link rel="stylesheet" href="/static/css/photo-tag.css" />
   <link rel="stylesheet" href="/static/css/edit-names.css" />
   <link rel="stylesheet" href="/static/css/filter-persons-bar.css" />
   <link rel="stylesheet" href="/static/css/face-thumbnail-tag.css" />
   <link rel="stylesheet" href="/static/css/get-sharable-link.css" />
-  <link rel="stylesheet" href="/static/css/shared.css" />
+  <link rel="stylesheet" href="/static/css/collections.css" />
 {% endblock %}
 
 {% block collections_dropdown_menu %}
@@ -19,17 +18,27 @@
 {% block content %}
   {% if not is_from_sharable_link %}
     {{ filterpersonsbar(persons, persons, cropped_faces_dict) }}
-    <a href="/">All collections</a>
+    <a href="/" class="all_collections_anchor"> < All collections</a>
+    <button class="share-btn foto-btn" type="button" data-collection-id="{{ collection_id }}">Get collection shareable link</button>
+    <a href="/edit_persons_names/{{ collection_id }}" class="edit-names-btn"><button class="foto-btn" type="button">Edit names for collection</button></a>
   {% endif %}
   <div class="col-10 offset-1 collection__content">
-    <h1>Collection {{ collection_id }}</h1>
-    {% if not is_from_sharable_link %}
-      <button class="share-btn foto-btn" type="button" data-collection-id="{{ collection_id }}">Get collection shareable link</button>
-      <br />
-      <a href="/edit_persons_names/{{ collection_id }}"><button class="edit-names-btn foto-btn" type="button">Edit names for collection</button></a>
-      <br />
-    {% endif %}
-    <h4>Photos:</h4>
+    <h1 class="collection__content__title">Collection {{ collection_id }}</h1>
+    <ul class="collection__content__persons-list">
+    {% for person in persons %}
+      <li class="content__person-item">
+        <a class="thumbnail-anchor" href="/persons?person_ids[]={{ person.id }}"
+        {% if person.name %}
+          title="{{ person.name }}"
+        {% else %}
+          title="Person {{ person.id }}"
+        {% endif %}
+        >
+          <img class="face-thumbnail" src="{{ cropped_faces_dict[person.id] }}" />
+        </a>
+      </li>
+    {% endfor %}
+    </ul>
     <div class="grid">
     {% for photo in photos %}
       <div class="grid-item">
@@ -50,44 +59,7 @@
         </a>
       </div>
     {% endfor %}
-  </div>
-
-    <h4>Persons:</h4>
-    <ul>
-    {% for person in persons %}
-      <li class="person">
-        <a class="thumbnail-anchor" href="/persons?person_ids[]={{ person.id }}"
-        {% if person.name %}
-          title="{{ person.name }}"
-        {% else %}
-          title="Person {{ person.id }}"
-        {% endif %}
-        >
-          <img class="face-thumbnail" src="{{ cropped_faces_dict[person.id] }}" />
-        </a>
-
-        {% if not is_from_sharable_link %}
-          {% if person.name %}
-            <div class="person__name-container">
-              <div class="name-container__name">{{ person.name }}</div>
-            </div>
-          {% else %}
-            <input class="name-field" type="text" name="name" placeholder="Person {{ person.id }}" data-personid="{{ person.id }}" />
-          {% endif %}
-        {% else %}
-          {% if person.name %}
-            <div class="person__name-container">
-              <div class="name-container__name">{{ person.name }}</div>
-            </div>
-          {% else %}
-            <div class="person__name-container">
-              <div class="name-container__name">Person {{ person.id }}</div>
-            </div>
-          {% endif %}
-        {% endif %}
-      </li>
-    {% endfor %}
-    </ul>
+    </div>
   </div>
 {% endblock %}
 

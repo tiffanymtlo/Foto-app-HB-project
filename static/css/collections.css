@@ -1,0 +1,38 @@
+.all_collections_anchor {
+  padding: 30px;
+  border: 1px solid red;
+  display: block;
+}
+
+.collection__content {
+  border: 1px solid red;
+  padding: 0 20px;
+}
+
+.collection__content__title {
+  padding: 10px;
+  margin: 0;
+}
+
+.share-btn, .edit-names-btn {
+  position: fixed;
+  right: 0;
+}
+
+.share-btn {
+  top: 100px;
+}
+
+.edit-names-btn {
+  top: 64px;
+}
+
+.collection__content__persons-list {
+  padding: 0;
+  list-style-type: none;
+}
+
+.collection__content__persons-list > li.content__person-item {
+  display: inline-block;
+  padding: 0 5px;
+}
