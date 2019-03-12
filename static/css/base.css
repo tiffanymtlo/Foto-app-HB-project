@@ -9,9 +9,13 @@ html, body {
 }
 
 .face-thumbnail {
-  width: 40px;
-  height: 43px;
-  border-radius: 20px;
+  width: 44px;
+  height: 45px;
+  border-radius: 22px;
+  border: 1px solid #bbb;
+  padding: 2px;
+  box-shadow: 0 0 3px #555;
+  background-color: white;
 }
 
 .container-fluid {
@@ -91,4 +95,18 @@ html, body {
   position: absolute;
   bottom: 0;
   right: 0;
+}
+
+.foto-anchor {
+  text-decoration: none;
+  color: #F19F4D;
+}
+
+.foto-anchor:hover {
+  color: #C8680B;
+}
+
+.foto-anchor-container {
+  padding: 10px 30px 20px 30px;
+  display: block;
 }

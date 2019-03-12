@@ -443,6 +443,7 @@ def photo_detail(photo_id):
         cropped_faces_dict=cropped_face_images_dict,
         person_photo_list=photo.person_photo,
         all_persons_list=all_persons_list,
+        num_persons=len(persons)
     )
 
 

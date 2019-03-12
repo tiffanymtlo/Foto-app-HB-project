@@ -133,10 +133,11 @@ def get_bounding_box_info_from_dict(info_dict):
 
 def make_cropped_face_image(photo_byte_string, photo_width, photo_height, face_width_percentage, face_height_percentage, face_top_percentage, face_left_percentage):
     image = Image.open(io.BytesIO(photo_byte_string))
-    left = face_left_percentage * photo_width
-    top = face_top_percentage * photo_height
-    right = (face_width_percentage * photo_width) + left
-    bottom = (face_height_percentage * photo_height) + top
+    buffer = 15
+    left = face_left_percentage * photo_width - buffer
+    top = face_top_percentage * photo_height - buffer
+    right = (face_width_percentage * photo_width) + (face_left_percentage * photo_width) + buffer
+    bottom = (face_height_percentage * photo_height) + (face_top_percentage * photo_height) + buffer
     cropped_image = image.crop((left, top, right, bottom))
     byte_string = io.BytesIO()
     cropped_image.save(byte_string, format='PNG')

@@ -1,0 +1,65 @@
+.share-btn, .edit-names-btn {
+  position: fixed;
+  right: 0;
+}
+
+.share-btn {
+  top: 100px;
+}
+
+.edit-names-btn {
+  top: 64px;
+}
+
+.persons__content__wrapper {
+  width: 80%;
+  margin: 0 auto;
+  margin-bottom: 30px;
+}
+
+.persons__content__description {
+  padding: 20px;
+  margin-bottom: 20px;
+  width: 90%;
+  /* font-weight: 700; */
+}
+
+.content__description__title {
+  font-weight: 700;
+}
+
+.content__description__caption {
+  color: #888888;
+  font-weight: 400;
+}
+
+.photo-wrapper {
+  width: 90%;
+  margin: 0 auto;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.photo-wrapper:hover {
+  background-color: white;
+  box-shadow: 2px 2px 3px rgba(10, 10, 10, 0.5);
+  transition: all 0.3s ease-in-out;
+}
+
+.photo-wrapper:hover .photo {
+  border: 0;
+  box-shadow: 0 0 0;
+  transition: all 0.3s ease-in-out;
+}
+
+.photo-list {
+  padding: 0;
+  list-style-type: none;
+}
+
+.photo {
+  border-radius: 10px;
+  border: 1px solid #aaa;
+  box-shadow: 1px 1px 3px rgba(20,20,20,0.4);
+}

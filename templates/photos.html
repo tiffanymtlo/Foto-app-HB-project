@@ -9,68 +9,77 @@
 
 {% block content %}
   {{ filterpersonsbar(all_persons_list, persons, cropped_faces_dict) }}
-  <div>
-    <h1>
-      Photo {{ photo.id }} in
-      <a href="/collections/{{ collection_id }}">
-        Collection {{ collection_id }}
-      </a>
-    </h1>
-    <div class="photo-container" style="width:650px;">
-      <img class="photo" src="{{ url }}" />
-      {% if person_photo_list %}
-        {% for person_photo in person_photo_list %}
-          <div
-            class="tag"
-            data-id="{{ person_photo.person.id }}"
-            data-top="{{ person_photo.face_top_percentage }}"
-            data-left="{{ person_photo.face_left_percentage }}"
-            data-width="{{ person_photo.face_width_percentage }}"
-            data-height="{{ person_photo.face_height_percentage }}"
-          >
-            <a
-              {% if person_photo.person.name %}
-                title="{{ person_photo.person.name }}"
+  <div class="foto-anchor-container">
+    <a href="/collections/{{ collection_id }}" class="foto-anchor">
+       < Back to Collection {{ collection_id}}
+    </a>
+  </div>
+  <a href="/edit_persons_names/{{ collection_id }}" class="edit-names-btn"><button class="foto-btn" type="button">Edit names for collection</button></a>
+  <div class="col-10 offset-1 photo__content">
+    <div class="photo-wrapper">
+      <div class="photo-container">
+        <img class="photo" src="{{ url }}" />
+        {% if person_photo_list %}
+          {% for person_photo in person_photo_list %}
+            <div
+              class="tag"
+              data-id="{{ person_photo.person.id }}"
+              data-top="{{ person_photo.face_top_percentage }}"
+              data-left="{{ person_photo.face_left_percentage }}"
+              data-width="{{ person_photo.face_width_percentage }}"
+              data-height="{{ person_photo.face_height_percentage }}"
+            >
+              <a
+                {% if person_photo.person.name %}
+                  title="{{ person_photo.person.name }}"
+                {% else %}
+                  title="Person {{ person_photo.person.id }}"
+                {% endif %}
+                class="tag-anchor"
+                href="/persons?person_ids[]={{ person_photo.person.id }}"
+              ></a>
+            </div>
+          {% endfor %}
+        {% endif %}
+      </div>
+    </div>
+    <div class="photo-description">
+      <h3 class="photo__content__title">
+        Photo {{ photo.id }} in
+        <a href="/collections/{{ collection_id }}">
+          Collection {{ collection_id }}
+        </a>
+      </h3>
+      <hr />
+      {% if persons %}
+        <div>{{ num_persons }} person(s) in this photo:</div>
+        <ul class="photo__content__list">
+        {% for person in persons %}
+          <li class="content__list-item" data-person-id="{{ person.id }}">
+            <a class="thumbnail-anchor" href="/persons?person_ids[]={{ person.id }}"
+            {% if person.name %}
+              title="{{ person.name }}"
+            {% else %}
+              title="Person {{ person.id }}"
+            {% endif %}
+            >
+              <img class="face-thumbnail" src="{{ cropped_faces_dict[person.id] }}" />
+              {% if person.name %}
+                <span class="name-container__name">{{ person.name }}</span>
               {% else %}
-                title="Person {{ person_photo.person.id }}"
+                <span class="name-container__name">Person{{ person.id }}</span>
               {% endif %}
-              class="tag-anchor"
-              href="/persons?person_ids[]={{ person_photo.person.id }}"
-            ></a>
-          </div>
+            </a>
+          </li>
         {% endfor %}
+        </ul>
       {% endif %}
     </div>
-    <br />
-    <br />
-    {% if persons %}
-      <div>These people are in this photo:</div>
-      <ul>
-      {% for person in persons %}
-        <li>
-          <a class="thumbnail-anchor" href="/persons?person_ids[]={{ person.id }}"
-          {% if person.name %}
-            title="{{ person.name }}"
-          {% else %}
-            title="Person {{ person.id }}"
-          {% endif %}
-          >
-            <img class="face-thumbnail" src="{{ cropped_faces_dict[person.id] }}" />
-            {% if person.name %}
-              <span class="name-container__name">{{ person.name }}</span>
-            {% else %}
-              <span class="name-container__name">Person{{ person.id }}</span>
-            {% endif %}
-          </a>
-        </li>
-      {% endfor %}
-      </ul>
-    {% endif %}
-    <br />
   </div>
 {% endblock %}
 
 {% block page_specific_scripts %}
   <script src="/static/js/photo-tag.js"></script>
   <script src="/static/js/filter-persons-bar.js"></script>
+  <script src="/static/js/photos.js"></script>
 {% endblock %}

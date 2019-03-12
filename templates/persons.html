@@ -5,6 +5,7 @@
   <link rel="stylesheet" href="/static/css/filter-persons-bar.css" />
   <link rel="stylesheet" href="/static/css/face-thumbnail-tag.css" />
   <link rel="stylesheet" href="/static/css/get-sharable-link.css" />
+  <link rel="stylesheet" href="/static/css/persons.css" />
 {% endblock %}
 
 
@@ -17,84 +18,92 @@
 {% block content %}
   {% if not is_from_sharable_link %}
     {{ filterpersonsbar(all_persons_list, person_list, cropped_face_image_dict) }}
+    <div class="foto-anchor-container">
+      <a href="/collections/{{ collection_id }}" class="foto-anchor">
+         < Back to Collection {{ collection_id}}
+      </a>
+    </div>
+    <button class="share-btn foto-btn" type="button" data-person-ids="{{ data_personids_string }}">Get customized persons shareable link</button>
+    <a href="/edit_persons_names/{{ collection_id }}" class="edit-names-btn"><button class="foto-btn" type="button">Edit names for collection</button></a>
   {% endif %}
-  <div>
-    <h1>
-      {% for person in person_list %}
-        <a
-          {% if person.name %}
-            title="{{ person.name }}"
-          {% else %}
-            title="Person {{ person.id }}"
-          {% endif %}
-          class="thumbnail-anchor"
-          href="/persons?person_ids[]={{ person.id }}"
-        >
-          <img class="face-thumbnail" src="{{ cropped_face_image_dict[person.id] }}" />
-        </a>
-        {% if person.name %}
-          <span>({{ person.name }})</span>
-        {% endif %}
-      {% endfor %}
-      in
-      {% if not is_from_sharable_link %}
-        <a href="/collections/{{ collection_id }}">
-          Collection {{ collection_id }}
-        </a>
-      {% else %}
-        <span>
-          the collection
-        </span>
-      {% endif %}
-    </h1>
-    {% if not is_from_sharable_link %}
-      <button class="share-btn" type="button" data-person-ids="{{ data_personids_string }}">Get customized persons shareable link</button>
-      <br />
-      <br />
-    {% endif %}
-    {% if url_dict %}
-      <div>
-        {% for person in person_list %}
-          {% if person.name %}
-            {{ person.name }},
-          {% else %}
-            Person {{ person.id }},
-          {% endif %}
-        {% endfor %}
-        is(are) found in these photos:
-      </div>
-      <ul>
-      {% for id, url in url_dict.items() %}
-        <li>
-          <a class="photo-container" href="/photos/{{ id }}" title="Photo {{ id }}" style="width:500px">
-            <img class="photo" src="{{ url }}" title="Photo {{ id }}" />
-            {% if id in boundingbox_dict %}
-              {% for entry in boundingbox_dict[id] %}
-                {% for person_id in entry %}
-                  <div
-                    class="tag"
-                    data-id="{{ person_id }}"
-                    data-top="{{ entry[person_id].face_top_percentage }}"
-                    data-left="{{ entry[person_id].face_left_percentage }}"
-                    data-width="{{ entry[person_id].face_width_percentage }}"
-                    data-height="{{ entry[person_id].face_height_percentage}}"
-                    {% if entry[person_id].person_name %}
-                      title="{{ entry[person_id].person_name }}"
-                    {% else %}
-                      title="Person {{ person_id }}"
-                    {% endif %}
-                  >
-                  </div>
-                {% endfor %}
-              {% endfor %}
+  <div class="col-10 offset-1 persons__content">
+    <div class="persons__content__wrapper">
+      <div class="persons__content__description">
+        <h1 class="content__description__title">
+          {% for person in person_list %}
+            <a
+              {% if person.name %}
+                title="{{ person.name }}"
+              {% else %}
+                title="Person {{ person.id }}"
+              {% endif %}
+              class="thumbnail-anchor"
+              href="/persons?person_ids[]={{ person.id }}"
+            >
+              <img class="face-thumbnail" src="{{ cropped_face_image_dict[person.id] }}" />
+            </a>
+            {% if person.name %}
+              <span>({{ person.name.upper() }})</span>
             {% endif %}
-          </a>
-        </li>
-      {% endfor %}
+          {% endfor %}
+          in
+          {% if not is_from_sharable_link %}
+            <a href="/collections/{{ collection_id }}">
+              Collection {{ collection_id }}
+            </a>
+          {% else %}
+            <span>
+              the collection
+            </span>
+          {% endif %}
+        </h1>
+        {% if url_dict %}
+          <div class="content__description__caption">
+            {% for person in person_list %}
+              {% if person.name %}
+                {{ person.name.upper() }},
+              {% else %}
+                Person {{ person.id }},
+              {% endif %}
+            {% endfor %}
+            is(are) in these photos:
+          </div>
+      </div>
+      <ul class="photo-list">
+        {% for id, url in url_dict.items() %}
+          <li class="photo-list__item">
+            <div class="photo-wrapper">
+              <a class="photo-container" href="/photos/{{ id }}" title="Photo {{ id }}">
+                <img class="photo" src="{{ url }}" title="Photo {{ id }}" />
+                {% if id in boundingbox_dict %}
+                  {% for entry in boundingbox_dict[id] %}
+                    {% for person_id in entry %}
+                      <div
+                        class="tag"
+                        data-id="{{ person_id }}"
+                        data-top="{{ entry[person_id].face_top_percentage }}"
+                        data-left="{{ entry[person_id].face_left_percentage }}"
+                        data-width="{{ entry[person_id].face_width_percentage }}"
+                        data-height="{{ entry[person_id].face_height_percentage}}"
+                        {% if entry[person_id].person_name %}
+                          title="{{ entry[person_id].person_name }}"
+                        {% else %}
+                          title="Person {{ person_id }}"
+                        {% endif %}
+                      >
+                      </div>
+                    {% endfor %}
+                  {% endfor %}
+                {% endif %}
+              </a>
+            </div>
+          </li>
+        {% endfor %}
       </ul>
-    {% else %}
-      <div>Oops..The chosen people did not have any photos taken together...</div>
-    {% endif %}
+      {% else %}
+        <div>Oops..The chosen people did not have any photos taken together...</div>
+      {% endif %}
+    </div>
   </div>
 {% endblock %}
 
