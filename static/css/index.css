@@ -56,7 +56,7 @@
 
 .collection-detail-wrapper {
   width: 32%;
-  height: 350px;
+  height: 300px;
   margin-bottom: 13px;
   margin-right: 13px;
   padding: 7px;
@@ -77,7 +77,7 @@
   flex-wrap: wrap;
   overflow: hidden;
   width: 100%;
-  height: 70%;
+  height: 80%;
   margin: 0 auto;
 }
 
@@ -108,6 +108,7 @@
 .collection-detail-wrapper:hover {
   cursor: pointer;
   background-color: #dedede;
+  box-shadow: 1px 1px 3px rgba(72,78,82,0.5);
   transition: all 0.5s ease-in-out;
 }
 
@@ -130,6 +131,10 @@
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
   transition: all 1s ease-in-out;
+}
+
+.collection-detail-wrapper:hover .photo_thumbnail {
+  box-shadow: 1px 1px 3px rgba(0,0,0,0.5);
 }
 
 .on-hover-layer__photos-num,

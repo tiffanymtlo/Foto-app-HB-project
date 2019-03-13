@@ -28,7 +28,7 @@
                   {% endfor %}
                 </div>
               </a>
-              <div class="on-hover-layer">
+              <div class="on-hover-layer" data-collection-id="{{ collection }}">
                 <div class="on-hover-layer__content-container">
                   <div class="on-hover-layer__collection">
                     Collection {{ collection }}
@@ -53,4 +53,5 @@
 {% endblock %}
 
 {% block page_specific_scripts %}
+  <script src="/static/js/index.js"></script>
 {% endblock %}
