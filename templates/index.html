@@ -9,29 +9,48 @@
 {% endblock %}
 
 {% block content %}
-  <a href="/new_collection">Create a new collection</a>
-  {% if collections_info_dict %}
-    <h1>Your collections</h1>
-    <ul>
-      {% for collection in collections_info_dict %}
-        <li class="collection-detail">
-          <a href="/collections/{{ collection }}" class="collection_detail__anchor">
-            <p class="collection-detail__title">Collection {{ collection }}</p>
-            <div class="collection-detail__photos">
-              {% for photo_id in collections_info_dict[collection]['photos'] %}
-                <img class="photo_thumbnail" src="{{ collections_info_dict[collection]['photos'][photo_id] }}">
-              {% endfor %}
+  <a href="/new_collection" class="new-collection-link">
+    <button class="foto-btn new-collection-btn">Create a new collection</button>
+  </a>
+  <div class="col-10 offset-1 all-collections__content">
+    {% if collections_info_dict %}
+      <h1 class="all-collections__header">Your collections</h1>
+      <ul class="collections-list">
+        {% for collection in collections_info_dict %}
+          <li class="collection-detail-wrapper" title="Collection {{ collection }}">
+            <div class="collection-detail">
+              <a href="/collections/{{ collection }}" class="collection_detail__anchor">
+                <div class="collection-detail__photos">
+                  {% for photo in collections_info_dict[collection]['photos'] %}
+                    <div class="photo_thumbnail__container">
+                      <img src="{{ photo }}" alt="" class="photo_thumbnail">
+                    </div>
+                  {% endfor %}
+                </div>
+              </a>
+              <div class="on-hover-layer">
+                <div class="on-hover-layer__content-container">
+                  <div class="on-hover-layer__collection">
+                    Collection {{ collection }}
+                  </div>
+                  <div class="on-hover-layer__photos-num">
+                    4 photos
+                  </div>
+                  <div class="on-hover-layer__persons-num">
+                    10 persons
+                  </div>
+                  <i class="on-hover-layer__magni-icon fas fa-search-plus"></i>
+                </div>
+              </div>
             </div>
-            <div class="collection-detail__persons">
-              {% for person_id in collections_info_dict[collection]['persons'] %}
-                <img class="face-thumbnail" src="{{ collections_info_dict[collection]['persons'][person_id] }}" />
-              {% endfor %}
-            </div>
-          </a>
-        </li>
-      {% endfor %}
-    </ul>
-  {% else %}
-    <h2>You don't have any photo collections</h2>
-  {% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <h2>You don't have any photo collections</h2>
+    {% endif %}
+  </div>
+{% endblock %}
+
+{% block page_specific_scripts %}
 {% endblock %}

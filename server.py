@@ -111,11 +111,10 @@ def index():
         collections = user.collections
         collections_info_dict = {}
         for collection in collections:
-            url_dict = make_photos_urls_dict(collection.photos)
-            cropped_face_images_dict = make_cropped_face_images_dict(collection.persons)
+            photo_url_dict = make_photos_urls_dict(collection.photos[:6])
+            photo_url_list = list(photo_url_dict.values())
             collections_info_dict[collection.id] = {
-                        'photos' : url_dict,
-                        'persons': cropped_face_images_dict,
+                'photos' : photo_url_list,
             }
         return render_template(
             'index.html',
