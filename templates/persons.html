@@ -35,7 +35,7 @@
           {% for person in person_list %}
             <a
               {% if person.name %}
-                title="{{ person.name }}"
+                title="{{ person.name.title() }}"
               {% else %}
                 title="Person {{ person.id }}"
               {% endif %}
@@ -45,7 +45,7 @@
               <img class="face-thumbnail" src="{{ cropped_face_image_dict[person.id] }}" />
             </a>
             {% if person.name %}
-              <span>({{ person.name.upper() }})</span>
+              <span>({{ person.name.title() }})</span>
             {% endif %}
           {% endfor %}
           in
@@ -63,7 +63,7 @@
           <div class="content__description__caption">
             {% for person in person_list %}
               {% if person.name %}
-                {{ person.name.upper() }},
+                {{ person.name.title() }},
               {% else %}
                 Person {{ person.id }},
               {% endif %}
@@ -88,7 +88,7 @@
                         data-width="{{ entry[person_id].face_width_percentage }}"
                         data-height="{{ entry[person_id].face_height_percentage}}"
                         {% if entry[person_id].person_name %}
-                          title="{{ entry[person_id].person_name }}"
+                          title="{{ entry[person_id].person_name.title() }}"
                         {% else %}
                           title="Person {{ person_id }}"
                         {% endif %}

@@ -33,7 +33,7 @@
       <li class="content__person-item">
         <a class="thumbnail-anchor" href="/persons?person_ids[]={{ person.id }}"
         {% if person.name %}
-          title="{{ person.name }}"
+          title="{{ person.name.title() }}"
         {% else %}
           title="Person {{ person.id }}"
         {% endif %}
@@ -64,7 +64,7 @@
             {% for person in photo.persons %}
               <a class="faces-container__thumbnail-anchor" href="/persons?person_ids[]={{ person.id }}"
               {% if person.name %}
-                title="{{ person.name }}"
+                title="{{ person.name.title() }}"
               {% else %}
                 title="Person {{ person.id }}"
               {% endif %}

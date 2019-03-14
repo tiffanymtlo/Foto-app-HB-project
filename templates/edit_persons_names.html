@@ -10,22 +10,26 @@
 {% endblock %}
 
 {% block content %}
-  <a href="/collections/{{ collection_id }}">Back to collection</a>
-  <h3>Persons in Collection {{ collection_id }}</h3>
-  <ul>
-  {% for person in persons %}
-    <li class="person">
-      <img class="face-thumbnail" src="{{ cropped_faces_dict[person.id] }}" />
-      {% if person.name %}
-        <div class="person__name-container">
-          <div class="name-container__name">{{ person.name }}</div>
-        </div>
-      {% else %}
-        <input class="name-field" type="text" name="name" placeholder="Person {{ person.id }}" data-personid="{{ person.id }}" />
-      {% endif %}
-    </li>
-  {% endfor %}
-  </ul>
+  <div class="foto-anchor-container">
+    <a href="/collections/{{ collection_id }}" class="foto-anchor"> < Back to collection</a>
+  </div>
+  <div class="col-10 offset-1 edit-names__content">
+    <h3 class="edit-names__content__title">Persons in Collection {{ collection_id }}</h3>
+    <ul class="persons__list">
+    {% for person in persons %}
+      <li class="person">
+        <img class="face-thumbnail" src="{{ cropped_faces_dict[person.id] }}" />
+        {% if person.name %}
+          <div class="person__name-container">
+            <div class="name-container__name">{{ person.name.title() }}</div>
+          </div>
+        {% else %}
+          <input class="name-field" type="text" name="name" placeholder="Person {{ person.id }}" data-personid="{{ person.id }}" />
+        {% endif %}
+      </li>
+    {% endfor %}
+    </ul>
+  </div>
 {% endblock %}
 
 {% block page_specific_scripts %}

@@ -1,3 +1,43 @@
+.edit-names__content {
+  padding: 50px 30px;
+}
+
+.edit-names__content__title {
+  padding: 10px;
+  margin-bottom: 20px;
+}
+
 .person__name-container, .name-container__name {
   display: inline-block;
+}
+
+.persons__list {
+  padding: 0;
+  list-style-type: none;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.name-field {
+  border-radius: 5px;
+}
+
+.person {
+  padding: 20px;
+  margin: 10px;
+  border-radius: 5px;
+  width: 280px;
+  color: rgb(100,100,100);
+}
+
+.person .face-thumbnail {
+  margin: 0 10px 0 0;
+}
+
+.person:hover, .person:focus {
+  background-color: orange;
+}
+
+.person:hover {
+  cursor: pointer;
 }

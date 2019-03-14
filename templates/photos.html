@@ -31,7 +31,7 @@
             >
               <a
                 {% if person_photo.person.name %}
-                  title="{{ person_photo.person.name }}"
+                  title="{{ person_photo.person.name.title() }}"
                 {% else %}
                   title="Person {{ person_photo.person.id }}"
                 {% endif %}
@@ -58,14 +58,14 @@
           <li class="content__list-item" data-person-id="{{ person.id }}">
             <a class="thumbnail-anchor" href="/persons?person_ids[]={{ person.id }}"
             {% if person.name %}
-              title="{{ person.name }}"
+              title="{{ person.name.title() }}"
             {% else %}
               title="Person {{ person.id }}"
             {% endif %}
             >
               <img class="face-thumbnail" src="{{ cropped_faces_dict[person.id] }}" />
               {% if person.name %}
-                <span class="name-container__name">{{ person.name }}</span>
+                <span class="name-container__name">{{ person.name.title() }}</span>
               {% else %}
                 <span class="name-container__name">Person{{ person.id }}</span>
               {% endif %}
