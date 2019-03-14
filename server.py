@@ -258,9 +258,8 @@ def show_collections(collection_id):
 
     collection = Collection.query.get(collection_id)
     if collection.user.username != session['username']:
-        flash('You can only view collections that you own.')
-        flash('Please log out this account and log into the correct account to view this collection.')
-        return redirect('/permission_denied')
+        flash('You can only view collections that you own. Please log out this account and log into the correct account to view this collection.')
+        return redirect('/')
 
     (collection_id,
     photo_list,
@@ -331,9 +330,8 @@ def person_detail():
     collection_owner = Collection.query.get(collection_id).user.username
 
     if collection_owner != session['username']:
-        flash('You can only view information about collections that you own.')
-        flash('Please log out this account and log into the correct account to view this page.')
-        return redirect('/permission_denied')
+        flash('You can only view information about collections that you own. Please log out this account and log into the correct account to view this page.')
+        return redirect('/')
 
     return render_template(
         'persons.html',
@@ -422,9 +420,8 @@ def photo_detail(photo_id):
     collection = photo.collection
 
     if collection.user.username != session['username']:
-        flash('You can only view information about collections that you own.')
-        flash('Please log out this account and log into the correct account to view this page.')
-        return redirect('/permission_denied')
+        flash('You can only view information about collections that you own. Please log out this account and log into the correct account to view this page.')
+        return redirect('/')
 
     persons = photo.persons
     all_persons_list = collection.persons
@@ -454,9 +451,8 @@ def edit_persons_names(collection_id):
 
     collection = Collection.query.get(collection_id)
     if collection.user.username != session['username']:
-        flash('You can only edit collections that you own.')
-        flash('Please log out this account and log into the correct account to edit this collection.')
-        return redirect('/permission_denied')
+        flash('You can only view information about collections that you own. Please log out this account and log into the correct account to edit this collection.')
+        return redirect('/')
 
     persons = collection.persons
     cropped_face_images_dict = make_cropped_face_images_dict(persons)
@@ -594,11 +590,6 @@ def create_sharable_slug_collection():
     uuid_string = Collection.query.get(collection_id).uuid
 
     return uuid_string
-
-
-@app.route('/permission_denied')
-def permission_denied():
-    return render_template('permission_denied.html')
 
 
 if __name__ == '__main__':
