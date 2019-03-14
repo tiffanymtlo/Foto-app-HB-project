@@ -1,16 +1,3 @@
-.share-btn, .edit-names-btn {
-  position: fixed;
-  right: 0;
-}
-
-.share-btn {
-  top: 100px;
-}
-
-.edit-names-btn {
-  top: 64px;
-}
-
 .persons__content__wrapper {
   width: 80%;
   margin: 0 auto;

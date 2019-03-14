@@ -11,4 +11,10 @@ $(function() {
 
     $('.persons__link').attr('href', persons_link);
   });
+
+  $('.filter-persons-btn').on('click', function() {
+    $('.filter-bar-container').toggleClass('show-filter-bar');
+    $('.filter-bar-triangle__filling').toggleClass('show-filter-bar');
+    $('.filter-bar-triangle__border').toggleClass('show-filter-bar');
+  });
 });

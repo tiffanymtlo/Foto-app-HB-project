@@ -14,7 +14,7 @@
        < Back to Collection {{ collection_id}}
     </a>
   </div>
-  <a href="/edit_persons_names/{{ collection_id }}" class="edit-names-btn"><button class="foto-btn" type="button">Edit names for collection</button></a>
+  {{ render_edit_name_btn(collection_id) }}
   <div class="col-10 offset-1 photo__content">
     <div class="photo-wrapper">
       <div class="photo-container">

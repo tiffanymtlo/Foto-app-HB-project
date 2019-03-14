@@ -3,39 +3,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Foto</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/static/css/base.css">
-    <link rel="stylesheet" href="/static/css/dropdown-menu.css">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|PT+Sans:400,700" rel="stylesheet">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <link rel="stylesheet" href="/static/css/base.css">
     {% block page_specific_style %}
     {% endblock %}
   </head>
 
+{% macro render_edit_name_btn(collection_id) %}
+  <a href="/edit_persons_names/{{ collection_id }}" class="edit-names-btn-container">
+    <button class="edit-names-btn foto-btn" type="button">
+      <i class="fas fa-pencil-alt"></i>
+    </button>
+  </a>
+{% endmacro %}
+
   <body>
       <nav class="navbar navbar-light justify-content-between foto-navbar fixed-top">
-        <a class="navbar-brand" href="/">
+        <a class="navbar-brand foto-logo" href="/">
           <img src="/static/images/logo_cropped.png" width="30" height="30" class="d-inline-block align-top">
           Foto
         </a>
         {% if 'username' in session %}
           <div class="navbar__right-container">
             <div class="navbar-text navbar__right-top-btn">
-              Hi, {{ session['username'] }}
-              <a href="/new_collection">Create a new collection</a>
-              {% block collections_dropdown_menu %}
-                <div class="collections-menu">
-                  <a href="/" class="collections-menu__header">My Collections</a>
-                  <ul class="collections-menu__collections">
-                  </ul>
-                </div>
-              {% endblock %}
-              {% block login_logout_button %}
-                {% if 'username' in session %}
-                  <a href="/logout"><button class="logout-btn" type="button">Logout</button></a>
-                {% else %}
-                  <a href="/login"><button class="login-btn" type="button">Login</button></a>
-                {% endif %}
-              {% endblock %}
+              Hi, {{ session['username'] }} <i class="fas fa-caret-down"></i>
+              <div class="dropdown-container">
+                <a href="/new_collection" class="dropdown__item">Create a new collection</a>
+                {% block collections_dropdown_menu %}
+                  <a href="/" class="dropdown__item">My Collections</a>
+                {% endblock %}
+                {% block login_logout_button %}
+                  {% if 'username' in session %}
+                    <a href="/logout" class="dropdown__item">Logout</a>
+                  {% else %}
+                    <a href="/login" class="dropdown__item">Login</a>
+                  {% endif %}
+                {% endblock %}
+              </div>
             </div>
 
           </div>
@@ -59,11 +64,16 @@
             {% endfor %}
           </ul>
           <a class="persons__link" href="#">
-            <button class="persons__link-btn" type="button">
+            <button class="persons__link-btn foto-btn" type="button">
               Filter persons
             </button>
           </a>
         </div>
+        <div class="filter-bar-triangle__border"></div>
+        <div class="filter-bar-triangle__filling"></div>
+        <button class="filter-persons-btn foto-btn" type="button">
+          <i class="fas fa-users"></i>
+        </button>
       {%- endmacro %}
       <div class="container-fluid">
         <div class="row content">
@@ -85,7 +95,6 @@
       <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
       <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-      <script src="/static/js/dropdown-menu.js"></script>
       {% block page_specific_scripts %}
       {% endblock %}
     </div>

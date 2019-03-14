@@ -21,8 +21,10 @@
     <div class="foto-anchor-container">
       <a href="/" class="foto-anchor"> < All collections</a>
     </div>
-    <button class="share-btn foto-btn" type="button" data-collection-id="{{ collection_id }}">Get collection shareable link</button>
-    <a href="/edit_persons_names/{{ collection_id }}" class="edit-names-btn"><button class="foto-btn" type="button">Edit names for collection</button></a>
+    <button class="share-btn foto-btn" type="button" data-collection-id="{{ collection_id }}">
+      <i class="fas fa-share-square"></i>
+    </button>
+    {{ render_edit_name_btn(collection_id) }}
   {% endif %}
   <div class="col-10 offset-1 collection__content">
     <h1 class="collection__content__title">Collection {{ collection_id }}</h1>

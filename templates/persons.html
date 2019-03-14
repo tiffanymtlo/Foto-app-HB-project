@@ -23,8 +23,10 @@
          < Back to Collection {{ collection_id}}
       </a>
     </div>
-    <button class="share-btn foto-btn" type="button" data-person-ids="{{ data_personids_string }}">Get customized persons shareable link</button>
-    <a href="/edit_persons_names/{{ collection_id }}" class="edit-names-btn"><button class="foto-btn" type="button">Edit names for collection</button></a>
+    <button class="share-btn foto-btn" type="button" data-person-ids="{{ data_personids_string }}">
+      <i class="fas fa-share-square"></i>
+    </button>
+    {{ render_edit_name_btn(collection_id) }}
   {% endif %}
   <div class="col-10 offset-1 persons__content">
     <div class="persons__content__wrapper">

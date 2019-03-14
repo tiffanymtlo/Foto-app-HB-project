@@ -1,14 +1,57 @@
 ul.filter-bar {
-  padding: 0;
+  padding: 10px;
   margin: 0;
   display: inline-block;
 }
 
 li.filter-item {
-  width: 65px;
+  width: 25%;
   display: inline-block;
+  margin: 3%
 }
 
 .persons__link {
   float: right;
+}
+
+.filter-bar-container {
+  background-color: #fffffe;
+  position: fixed;
+  bottom: 96px;
+  right: 68px;
+  z-index: -1;
+  padding: 20px;
+  border-radius: 5px;
+  border: 1px solid rgb(200,200,200);
+  box-shadow: 2px 3px 4px rgba(200,200,200,0.8);
+  opacity: 0;
+}
+
+.filter-bar-triangle__filling, .filter-bar-triangle__border {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  position: fixed;
+  z-index: -1;
+  opacity: 0;
+}
+
+.filter-bar-triangle__filling {
+  border-width: 15px 0 15px 20px;
+  border-color: transparent transparent transparent #fffffe;
+  right: 51px;
+  bottom: 114px;
+}
+
+.filter-bar-triangle__border {
+  border-width: 14px 0 14px 20px;
+  border-color: transparent transparent transparent rgb(200,200,200,0.8);
+  right: 48px;
+  bottom: 114px;
+}
+
+.show-filter-bar {
+  opacity: 1;
+  z-index: 2;
+  transition: all 0.5s ease-in-out;
 }
