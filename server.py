@@ -266,7 +266,8 @@ def show_collections(collection_id):
     url_dict,
     person_list,
     cropped_face_images_dict,
-    boundingbox_dict) = collection_render_info(collection_id)
+    boundingbox_dict,
+    collection_num_persons) = collection_render_info(collection_id)
 
     return render_template('collections.html',
         collection_id=collection_id,
@@ -275,6 +276,7 @@ def show_collections(collection_id):
         persons=person_list,
         cropped_faces_dict=cropped_face_images_dict,
         boundingbox_dict=boundingbox_dict,
+        collection_num_persons=collection_num_persons,
         is_from_sharable_link=False
     )
 
@@ -282,6 +284,7 @@ def show_collections(collection_id):
 def collection_render_info(collection_id):
     photo_list = Photo.query.filter(Photo.collection_id == collection_id).all()
     person_list = Person.query.filter(Person.collection_id == collection_id).all()
+    collection_num_persons = len(person_list)
 
     cropped_face_images_dict = make_cropped_face_images_dict(person_list)
     url_dict = make_photos_urls_dict(photo_list)
@@ -306,7 +309,8 @@ def collection_render_info(collection_id):
             url_dict,
             person_list,
             cropped_face_images_dict,
-            boundingbox_dict)
+            boundingbox_dict,
+            collection_num_persons)
 
 
 @app.route('/persons', methods=['GET'])

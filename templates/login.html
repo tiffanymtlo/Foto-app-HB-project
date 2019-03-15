@@ -9,16 +9,14 @@
 
 {% block content %}
   <div class="col-4 offset-4 signin__container">
-    <h2 class="signin__header">Sign in below: </h2>
-    <p class="signin__caption">Start identifying photos with a free account</p>
+    <h2 class="signin__header">Welcome back! </h2>
+    <p class="signin__caption">FOTO, the smart online photo album</p>
     <form class="signin__form" action="/login/validate" method="GET">
       <div class="form-group form__username-container">
-        <label for="user-login__username">Username: </label>
-        <input class="form-control input-textbox" type="text" name="username" />
+        <input class="form-control input-textbox" type="text" name="username" placeholder="Username"/>
       </div>
       <div class="form-group form__pwd-container">
-        <label for="user-login__pwd">Password: </label>
-        <input class="input-textbox form-control input-textbox" type="password" name="password" />
+        <input class="input-textbox form-control input-textbox" type="password" name="password" placeholder="Password" />
       </div>
       <button class="form__sigin-btn foto-btn" type="submit">Login</button>
     </form>

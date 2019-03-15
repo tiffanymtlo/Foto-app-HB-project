@@ -20,7 +20,7 @@ body {
   z-index: -1;
 }
 
-.signin__container {
+.register__container {
   background-color: #FFFFFE;
   border-radius: 10px;
   padding: 45px;
@@ -34,10 +34,12 @@ body {
   background: none;
 }
 
-.form__register-link {
+.form__signin-link {
   font-size: 0.8em;
 }
 
-.form__username-container, .form__pwd-container {
+.register-form__username-container,
+.register-form__pwd-container,
+.register-form__confirm-pwd-container {
   margin-bottom: 30px;
 }

@@ -48,6 +48,10 @@ h1, h2, h3, h4, h5, h5, h6 {
   position: sticky;
   bottom: 0;
   width: 100%;
+  font-weight: 400;
+  font-size: 0.8em;
+  height: 40px;
+  z-index: 3;
 }
 
 .navbar .foto-logo:hover {
