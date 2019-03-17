@@ -9,13 +9,18 @@
 {% endblock %}
 
 {% block content %}
-  <a href="/new_collection" class="new-collection-link">
-    <button class="foto-btn new-collection-btn">Create a new collection</button>
-  </a>
   <div class="col-10 offset-1 all-collections__content">
     {% if collections_info_dict %}
       <h1 class="all-collections__header">Your collections</h1>
       <ul class="collections-list">
+        <li class="collection-detail-wrapper new-collection-container" title="Create new collection">
+          <a href="/new_collection" class="new-collection-link">
+            <div class="collection-detail new-collection">
+              <div class="new-collection-empty-div"></div>
+              <i class="fas fa-plus"></i>
+            </div>
+          </a>
+        </li>
         {% for collection in collections_info_dict %}
           <li class="collection-detail-wrapper" title="Collection {{ collection }}">
             <div class="collection-detail">

@@ -29,11 +29,11 @@
   background: none;
 }
 
-.new-collection-link {
+/* .new-collection-link {
   text-decoration: none;
   padding: 10px 30px 20px 30px;
   display: block;
-}
+} */
 
 .collection-detail__title {
   margin: 10px 0;
@@ -161,4 +161,28 @@
     right: 0;
     font-size: 1.3em;
     color: #efefef;
+}
+
+.new-collection {
+  border: 5px dotted rgb(200,200,200);
+  text-align: center;
+  font-size: 2em;
+  color: rgb(200,200,200);
+  display: flex;
+  flex-direction: column;
+}
+
+.new-collection-empty-div {
+  height: 45%;
+}
+
+.new-collection-link:hover {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.new-collection-link:hover .new-collection {
+  border: 5px dotted #F19F4D;
+  color: #F19F4D;
+  transition: all 0.3s ease-in-out;
 }
