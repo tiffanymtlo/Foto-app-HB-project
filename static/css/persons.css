@@ -50,3 +50,25 @@
   border: 1px solid #aaa;
   box-shadow: 1px 1px 3px rgba(20,20,20,0.4);
 }
+
+.persons__content__tab-wrapper .tab-anchor {
+  color: #f19f4d;
+}
+
+.persons__content__tab-wrapper .tab-item .active {
+  background-color: #F19F4D;
+  color: #fff;
+}
+
+.style-grid .photo-list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.style-grid .photo-list__item{
+  width: 33%;
+}
+
+.style-grid .photo-wrapper {
+  padding: 5px;
+}

@@ -29,7 +29,7 @@
     {{ render_edit_name_btn(collection_id) }}
   {% endif %}
   <div class="col-10 offset-1 persons__content">
-    <div class="persons__content__wrapper">
+    <div class="persons__content__wrapper" data-list-style="list">
       <div class="persons__content__description">
         <h1 class="content__description__title">
           {% for person in person_list %}
@@ -71,6 +71,16 @@
             {% if person_list|length < 2 %}is{% else %}are{% endif %} in these photos:
           </div>
       </div>
+      <hr />
+      <div class="nav nav-pills nav-fill persons__content__tab-wrapper">
+        <div class="nav-item tab-item">
+          <a class="nav-link active tab-anchor" href="" data-style="list">List</a>
+        </div>
+        <div class="nav-item tab-item">
+          <a class="nav-link tab-anchor non-active" href="" data-style="grid">Grid</a>
+        </div>
+      </div>
+      <hr />
       <ul class="photo-list">
         {% for id, url in url_dict.items() %}
           <li class="photo-list__item">
@@ -131,4 +141,5 @@
   <script src="/static/js/photo-tag.js"></script>
   <script src="/static/js/filter-persons-bar.js"></script>
   <script src="/static/js/get-sharable-link.js"></script>
+  <script src="/static/js/persons.js"></script>
 {% endblock %}
