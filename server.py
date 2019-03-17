@@ -537,12 +537,20 @@ def show_persons_by_uuid(sharable_uuid):
 def show_collections_by_uuid(sharable_collection_uuid):
     sharable_collection_id = Collection.query.filter(Collection.uuid == sharable_collection_uuid).first().id
 
+    # (collection_id,
+    # photo_list,
+    # url_dict,
+    # person_list,
+    # cropped_face_images_dict,
+    # boundingbox_dict) = collection_render_info(sharable_collection_id)
+
     (collection_id,
     photo_list,
     url_dict,
     person_list,
     cropped_face_images_dict,
-    boundingbox_dict) = collection_render_info(sharable_collection_id)
+    boundingbox_dict,
+    collection_num_persons) = collection_render_info(sharable_collection_id)
 
     return render_template(
         'collections.html',
@@ -552,6 +560,7 @@ def show_collections_by_uuid(sharable_collection_uuid):
         persons=person_list,
         cropped_faces_dict=cropped_face_images_dict,
         boundingbox_dict=boundingbox_dict,
+        collection_num_persons=collection_num_persons,
         is_from_sharable_link=True
     )
 

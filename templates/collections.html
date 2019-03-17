@@ -44,55 +44,77 @@
         </li>
       {% endfor %}
     {% else %}
-      {% for n in range(10) %}
-        <li class="content__person-item">
-          <a class="thumbnail-anchor" href="/persons?person_ids[]={{ persons[n].id }}"
-          {% if persons[n].name %}
-            title="{{ persons[n].name.title() }}"
-          {% else %}
-            title="Person {{ persons[n].id }}"
-          {% endif %}
-          >
-            <img class="face-thumbnail" src="{{ cropped_faces_dict[persons[n].id] }}" />
-          </a>
-        </li>
-      {% endfor %}
-      <div class="more-persons-caption-container">
-        <p class="more-persons-caption"> and {{ collection_num_persons - 10 }} more...</p>
+      <div class="person-item-row">
+        {% for n in range(10) %}
+          <li class="content__person-item">
+            <a class="thumbnail-anchor" href="/persons?person_ids[]={{ persons[n].id }}"
+            {% if persons[n].name %}
+              title="{{ persons[n].name.title() }}"
+            {% else %}
+              title="Person {{ persons[n].id }}"
+            {% endif %}
+            >
+              <img class="face-thumbnail" src="{{ cropped_faces_dict[persons[n].id] }}" />
+            </a>
+          </li>
+        {% endfor %}
+        <div class="more-persons-caption-container">
+          <p class="more-persons-caption"> and <span class="more-persons__show-more foto-anchor">{{ collection_num_persons - 10 }} more...</span></p>
+        </div>
+      </div>
+      <div class="person-item-row">
+        {% for n in range(10,collection_num_persons) %}
+          <li class="content__person-item">
+            <a class="thumbnail-anchor" href="/persons?person_ids[]={{ persons[n].id }}"
+            {% if persons[n].name %}
+              title="{{ persons[n].name.title() }}"
+            {% else %}
+              title="Person {{ persons[n].id }}"
+            {% endif %}
+            >
+              <img class="face-thumbnail" src="{{ cropped_faces_dict[persons[n].id] }}" />
+            </a>
+          </li>
+        {% endfor %}
+        <div class="persons__show-less" title="Show less"><i class="fas fa-angle-double-up"></i></div>
       </div>
     {% endif %}
     </ul>
     <div class="grid">
     {% for photo in photos %}
       <div class="grid-item">
-        <a class="photo-container" href="/photos/{{ photo.id }}" title="Photo{{ photo.id }}">
-          <img class="photo" src="{{ url_dict[photo.id] }}" />
-          {% if photo.id in boundingbox_dict %}
-            {% for person_box in boundingbox_dict[photo.id] %}
-              <div
-                class="tag"
-                data-id="{{ photo.id }}"
-                data-top="{{ person_box.face_top_percentage }}"
-                data-left="{{ person_box.face_left_percentage }}"
-                data-width="{{ person_box.face_width_percentage }}"
-                data-height="{{ person_box.face_height_percentage}}"
-              ></div>
-            {% endfor %}
-          {% endif %}
-          <div class="faces-container">
-            {% for person in photo.persons %}
-              <a class="faces-container__thumbnail-anchor" href="/persons?person_ids[]={{ person.id }}"
-              {% if person.name %}
-                title="{{ person.name.title() }}"
-              {% else %}
-                title="Person {{ person.id }}"
-              {% endif %}
-              >
-                <img class="faces-container__face-thumbnail" src="{{ cropped_faces_dict[person.id] }}" />
-              </a>
-            {% endfor %}
+        <div class="item-wrapper">
+          <a class="photo-container" href="/photos/{{ photo.id }}" title="Photo{{ photo.id }}">
+          <div class="photo-wrapper">
+            <img class="photo" src="{{ url_dict[photo.id] }}" />
+            {% if photo.id in boundingbox_dict %}
+              {% for person_box in boundingbox_dict[photo.id] %}
+                <div
+                  class="tag"
+                  data-id="{{ photo.id }}"
+                  data-top="{{ person_box.face_top_percentage }}"
+                  data-left="{{ person_box.face_left_percentage }}"
+                  data-width="{{ person_box.face_width_percentage }}"
+                  data-height="{{ person_box.face_height_percentage}}"
+                ></div>
+              {% endfor %}
+            {% endif %}
           </div>
-        </a>
+            <div class="faces-container">
+              {% for person in photo.persons %}
+                <a class="faces-container__thumbnail-anchor" href="/persons?person_ids[]={{ person.id }}"
+                {% if person.name %}
+                  title="{{ person.name.title() }}"
+                {% else %}
+                  title="Person {{ person.id }}"
+                {% endif %}
+                >
+                  <img class="faces-container__face-thumbnail" src="{{ cropped_faces_dict[person.id] }}" />
+                </a>
+              {% endfor %}
+            </div>
+          </a>
+        </div>
       </div>
     {% endfor %}
     </div>
