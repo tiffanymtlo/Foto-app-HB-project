@@ -36,10 +36,10 @@ On the other hand, album’s owners are able to manage their collections of phot
 ## Set Up
 
 ### Requirements
+- PostgreSQL
+- Python 3.6
 
-* PostgreSQL
-* Python 3.6
-
+### Installation
 Follow the instructions below to start this app on your computer:
 
 Clone repository:
