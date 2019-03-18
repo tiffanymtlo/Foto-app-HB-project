@@ -159,6 +159,9 @@ By clicking ![alt text](https://github.com/tiffanymtlo/Foto-app-HB-project/blob/
 
 ### User Log In and Out
 
+User can log into his/her own account to manage their collections in Foto. 
+
+![alt text](https://github.com/tiffanymtlo/Foto-app-HB-project/blob/master/screenshots-for-README/user_login.png "user login")
 
 ### Face Thumbnails Display
 
