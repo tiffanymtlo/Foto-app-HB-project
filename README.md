@@ -1,7 +1,7 @@
 # Foto
 
 - [Introduction](#introduction)
-- [Set Up/Installation](#set-up-installation)
+- [Set Up/Installation](#set-upinstallation)
 - [Core functionalities](#core-functionalities)
     - [Add New Collection](#Add-new-collection)
         - [From Homepage](#from-homepage)
@@ -22,7 +22,7 @@
     - [Photo Display Options](#photo-display-options)
         - [List](#list)
         - [Grid](#grid)
-- [Tech/Framework used](#technologies-frameworks-and-libraries)
+- [Tech/Framework used](#technologies-frameworks-apis-and-libraries)
 
 
 ## Introduction
@@ -109,7 +109,7 @@ $ python3 server.py
 
 
 
-## Technologies, frameworks, API and libraries
+## Technologies, frameworks, APIs and libraries
 - Python
 - Flask
 - SQL
