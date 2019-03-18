@@ -33,7 +33,7 @@ Imagine having to comb through a hundred photos just to find one with you in it.
 
 On the other hand, album’s owners are able to manage their collections of photos, edit names for the identified faces, create and share unique links that include only pictures of the intended receivers.
 
-## Setup
+## Set Up
 
 ### Requirements
 
