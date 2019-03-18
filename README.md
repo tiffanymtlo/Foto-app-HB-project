@@ -120,7 +120,7 @@ User can also select to show the subset of photos with multiple people in it. By
 
 For example, in the screenshots below, they show how to select multiple people and show the resulting page.
 
- ![alt text](https://github.com/tiffanymtlo/Foto-app-HB-project/blob/master/screenshots-for-README/filter_multiple_people.png "selecting multiple people")
+ ![alt text](https://github.com/tiffanymtlo/Foto-app-HB-project/blob/master/screenshots-for-README/filtering_multiple_people.png "selecting multiple people")
 
   ![alt text](https://github.com/tiffanymtlo/Foto-app-HB-project/blob/master/screenshots-for-README/multiple_people_page.png "person page")
 
