@@ -80,8 +80,10 @@ $ python3 server.py
 ## Core functionalities
 
 ### Add New Collection
-
+Users can go to the upload page either from the homepage or from the dropdown menu:
+![alt text](https://github.com/tiffanymtlo/Foto-app-HB-project/blob/master/screenshots-for-README/upload_page.png "Upload Page") 
 #### From Homepage
+
 #### From Dropdown Menu
 
 ### Facial Recognition on Faces
