@@ -25,6 +25,9 @@ li.filter-item {
   border: 1px solid rgb(200,200,200);
   box-shadow: 2px 3px 4px rgba(200,200,200,0.8);
   opacity: 0;
+  max-height: 60%;
+  overflow: scroll;
+  max-width: 380px;
 }
 
 .filter-bar-triangle__filling, .filter-bar-triangle__border {

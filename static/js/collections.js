@@ -6,8 +6,9 @@ $(function() {
   });
 
   $('.more-persons__show-more').on('click', function() {
-    $('.collection__content__persons-list').css('height', '110px');
-    $('.person-item-row').css('height', '50%');
+    const $personItemRowNum = $('.person-item-row').length;
+    $('.collection__content__persons-list').css('height', 55*$personItemRowNum + 'px');
+    $('.person-item-row').css('height', 100/$personItemRowNum + '%');
     $('.more-persons-caption-container').css('display', 'none');
   });
 
