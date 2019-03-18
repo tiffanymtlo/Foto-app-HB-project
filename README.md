@@ -62,7 +62,7 @@ Install dependencies:
 $ pip3 install -r requirements.txt
 ```
 
-Create database 'photos_identify':
+Create database `photos_identify`:
 ```
 $ createdb photos_identify
 ```
@@ -79,35 +79,35 @@ $ python3 server.py
 
 ## Core functionalities
 
-###Add New Collection
+### Add New Collection
 
-####From Homepage
-####From Dropdown Menu
+#### From Homepage
+#### From Dropdown Menu
 
-###Facial Recognition on Faces
-####Collection Page
-####Person Page
-####Photo Page
+### Facial Recognition on Faces
+#### Collection Page
+#### Person Page
+#### Photo Page
 
-###Create Unique Shareable Link
-####Share Entire Collection
-####Share Persons Page
-#####One Person
-#####Multiple People
+### Create Unique Shareable Link
+#### Share Entire Collection
+#### Share Persons Page
+##### One Person
+##### Multiple People
 
-###Edit People's names
+### Edit People's names
 
 
 
 ## Other functionalities
 
-###User Log In and Out
-###Face Thumbnails Display
-###Photo Display Options
-####List
-####Grid
+### User Log In and Out
+### Face Thumbnails Display
+### Photo Display Options
+#### List
+#### Grid
 
-   
+
 
 ## Technologies, frameworks, API and libraries
 - Python
@@ -119,8 +119,10 @@ $ python3 server.py
 - HTML/CSS
 - Javascript
 - jQuery
-- Bootstrap
-- AWS S3
-- AWS Rekognition
-- boto3
-- Pillow
+- Bootstrap (https://getbootstrap.com/)
+- AWS S3 (https://aws.amazon.com/s3/)
+- AWS Rekognition (https://aws.amazon.com/rekognition/)
+- boto3 (https://boto3.amazonaws.com/v1/documentation/api/latest/index.html)
+- Pillow (https://pillow.readthedocs.io/en/stable/index.html)
+- Masonry (https://masonry.desandro.com/)
+- UUID (https://docs.python.org/2/library/uuid.html)
